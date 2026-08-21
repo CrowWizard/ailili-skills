@@ -1,3 +1,7 @@
-[env]
-# gpt-image-2-core pulls ssh2 with vendored-openssl; this env uses the system OpenSSL.
-OPENSSL_NO_VENDOR = "1"
+# Linux local builds can skip vendored OpenSSL if libssl-devel is installed:
+#   OPENSSL_NO_VENDOR=1 cargo build -p ailili-aigc
+#
+# Windows CI vendors OpenSSL (see .github/workflows/build-ailili-aigc-windows-x64.yml).
+# Do not set OPENSSL_NO_VENDOR here: openssl-sys skips vendoring whenever the
+# variable is present, which breaks windows-msvc.
+

@@ -27,3 +27,12 @@ JSON
 Text models: `$AILILI_AIGC_HOME/config.json` `default_text_provider`, or `OPENAI_API_KEY` + optional `OPENAI_API_BASE` / `OPENAI_TEXT_MODEL`.
 
 Image jobs: gpt-image-2 `default_provider` under `$CODEX_HOME/gpt-image-2-skill/config.json`.
+
+## Windows x64 binary
+
+GitHub Action: **Actions → `ailili-aigc Windows x64` → Run workflow**. Artifact `ailili-aigc-windows-x64` contains:
+
+- `ailili-aigc.exe`
+- `SHA256SUMS.txt`
+
+Put the exe in a skill `scripts/` folder (or set `AILILI_AIGC_BIN` to its path). The Node wrappers (`aigc_imagegen.cjs` / `aigc_textgen.cjs`) look for `scripts/ailili-aigc.exe` next.

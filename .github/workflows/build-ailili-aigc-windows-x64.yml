@@ -1,0 +1,77 @@
+# Build the ailili-aigc Windows x64 CLI (MSVC).
+# Put the artifact exe next to each skill as scripts/ailili-aigc.exe
+# (or set AILILI_AIGC_BIN to the unpacked path).
+name: ailili-aigc Windows x64
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "ailili-aigc/crates/**"
+      - "ailili-aigc/Cargo.toml"
+      - "ailili-aigc/Cargo.lock"
+      - "gpt-image-2/crates/**"
+      - ".github/workflows/build-ailili-aigc-windows-x64.yml"
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: "-C target-cpu=x86-64"
+
+jobs:
+  windows-x64:
+    runs-on: windows-2025
+    defaults:
+      run:
+        working-directory: ailili-aigc
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install NASM (vendored OpenSSL / ssh2)
+        uses: ilammy/setup-nasm@v1
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Cache cargo
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: ailili-aigc
+          prefix-key: ailili-aigc-windows-x64
+
+      - name: Build release exe
+        env:
+          # config.toml may set OPENSSL_NO_VENDOR=1 for Linux; openssl-sys
+          # skips vendoring whenever this var is set, even to "0".
+          OPENSSL_NO_VENDOR: ""
+        run: |
+          Remove-Item Env:OPENSSL_NO_VENDOR -ErrorAction SilentlyContinue
+          cargo build --locked --release -p ailili-aigc --target x86_64-pc-windows-msvc
+
+      - name: Stage artifact
+        shell: pwsh
+        run: |
+          $dest = "dist/windows-x64"
+          New-Item -ItemType Directory -Force -Path $dest | Out-Null
+          $exe = "target/x86_64-pc-windows-msvc/release/ailili-aigc.exe"
+          if (-not (Test-Path $exe)) { throw "missing $exe" }
+          Copy-Item $exe "$dest/ailili-aigc.exe"
+          $hash = (Get-FileHash -Algorithm SHA256 "$dest/ailili-aigc.exe").Hash.ToLower()
+          Set-Content -Encoding ascii "$dest/SHA256SUMS.txt" "$hash  ailili-aigc.exe"
+          Get-Item "$dest/ailili-aigc.exe" | Format-List Name, Length
+          Get-Content "$dest/SHA256SUMS.txt"
+
+      - name: Upload Windows x64 exe
+        uses: actions/upload-artifact@v4
+        with:
+          name: ailili-aigc-windows-x64
+          path: |
+            ailili-aigc/dist/windows-x64/ailili-aigc.exe
+            ailili-aigc/dist/windows-x64/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 14
