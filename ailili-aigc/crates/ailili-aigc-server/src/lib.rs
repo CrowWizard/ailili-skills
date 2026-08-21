@@ -18,9 +18,7 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
-use gpt_image_2_core::{
-    default_config_path, jobs_dir, load_app_config, show_history_job, EditRequest,
-};
+use gpt_image_2_core::{show_history_job, EditRequest};
 use gpt_image_2_runtime::{
     chrono_like_now, enqueue_job, job_snapshot, persist_job, unique_job_dir, JobQueueInner,
     JobSnapshotInput, QueueRuntimeHooks, QueuedJob, QueuedTask,
@@ -42,7 +40,7 @@ pub const COMPAT_ROUTES: &[&str] = &[
     "GET /aigc/jobs/{id}/outputs/{index}",
 ];
 
-pub use config::data_home;
+pub use config::{bind_runtime_paths, config_path, data_home};
 
 pub trait JobRunner: Clone + Send + Sync + 'static {
     fn run_edit(&self, request: EditRequest, job_id: String, dir: PathBuf) -> Result<Value, Value>;
@@ -154,6 +152,7 @@ struct TextGenBody {
 }
 
 pub fn router<R: JobRunner>(state: AppState<R>) -> Router {
+    config::bind_runtime_paths();
     Router::new()
         .route("/health", get(health))
         .route("/aigc/imageGenAsync", post(image_gen_async::<R>))
@@ -165,6 +164,7 @@ pub fn router<R: JobRunner>(state: AppState<R>) -> Router {
 }
 
 pub fn run_api_only(host: String, port: u16) -> Result<(), Box<dyn std::error::Error>> {
+    config::bind_runtime_paths();
     let fake = fake::enabled();
     if fake {
         eprintln!("ailili-aigc: AILILI_AIGC_FAKE_IMAGE is on; image jobs return a stub PNG.");
@@ -190,6 +190,7 @@ async fn health() -> Json<Value> {
         "ok": true,
         "service": "ailili-aigc",
         "version": env!("CARGO_PKG_VERSION"),
+        "config": config::config_path().display().to_string(),
     }))
 }
 
@@ -239,8 +240,7 @@ fn enqueue_image_job<R: JobRunner>(
     let resolution = body.resolution.unwrap_or_else(|| "2K".to_string());
     let aspect_ratio = body.aspect_ratio.unwrap_or_else(|| "1:1".to_string());
     let size = size::map_image_size(&resolution, &aspect_ratio)?;
-    let config = load_app_config(&default_config_path()).unwrap_or_default();
-    let provider = config.default_provider.clone();
+    let provider = config::resolve_image_provider_name()?;
     let request = EditRequest {
         prompt,
         provider: provider.clone(),
@@ -258,7 +258,8 @@ fn enqueue_image_job<R: JobRunner>(
         mask: None,
         selection_hint: None,
     };
-    let (id, dir) = unique_job_dir(jobs_dir(), "ailili").map_err(|error| error.to_string())?;
+    let (id, dir) =
+        unique_job_dir(config::jobs_dir(), "ailili").map_err(|error| error.to_string())?;
     let queued = QueuedJob {
         id: id.clone(),
         command: "images edit".to_string(),
@@ -373,7 +374,7 @@ fn enqueue_text_job<R: JobRunner>(
         .filter(|url| !url.is_empty())
         .collect();
     let (id, _dir) =
-        unique_job_dir(jobs_dir(), "ailili-text").map_err(|error| error.to_string())?;
+        unique_job_dir(config::jobs_dir(), "ailili-text").map_err(|error| error.to_string())?;
     let created_at = chrono_like_now();
     persist_text_job(
         &id,
@@ -606,16 +607,14 @@ fn decode_nl(text: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::config::ENV_LOCK;
     use crate::fake::{FakeRunner, TINY_PNG};
     use axum::{
         body::Body,
         http::{Request, StatusCode},
     };
     use http_body_util::BodyExt;
-    use std::sync::Mutex as StdMutex;
     use tower::ServiceExt;
-
-    static ENV_LOCK: StdMutex<()> = StdMutex::new(());
 
     fn data_png_url() -> String {
         format!(

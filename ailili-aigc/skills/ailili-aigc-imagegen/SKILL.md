@@ -19,7 +19,7 @@ ailili-aigc imagegen '<JSON>'
 node scripts/aigc_imagegen.cjs '<JSON>'
 ```
 
-cwd 为本 skill 根目录。JSON 必填：`prompt`、`imageUrls`（至少 1 个 URL）、`outputNum`、`resolution`、`aspectRatio`、`quality`。`provider` 可传，本地网关会忽略，改用 gpt-image-2 的 `default_provider`。
+cwd 为本 skill 根目录。JSON 必填：`prompt`、`imageUrls`（至少 1 个 URL）、`outputNum`、`resolution`、`aspectRatio`、`quality`。`provider` 可传，本地网关会忽略，改用 `$AILILI_AIGC_HOME/config.json` 的 `default_image_provider`（或 `default_provider`）。
 
 **异步流程**（脚本内完成）：
 

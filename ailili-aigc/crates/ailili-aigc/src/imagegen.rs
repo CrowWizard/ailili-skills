@@ -59,7 +59,10 @@ pub fn dispatch(argv: &[String]) -> i32 {
         let _ = std::fs::create_dir_all(parent);
     }
     if let Err(error) = std::fs::write(&out_path, &serialized) {
-        eprintln!("Failed to save raw response to {}: {error}", out_path.display());
+        eprintln!(
+            "Failed to save raw response to {}: {error}",
+            out_path.display()
+        );
     }
     if media_paths.is_empty() {
         println!(

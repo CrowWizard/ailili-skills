@@ -427,12 +427,14 @@ fn status_payload() -> Value {
             "running": true,
             "daemon": info,
             "url": daemon_base_url(),
+            "config": ailili_aigc_server::config_path().display().to_string(),
         }),
         None => json!({
             "ok": true,
             "command": "daemon status",
             "running": false,
             "url": daemon_base_url(),
+            "config": ailili_aigc_server::config_path().display().to_string(),
         }),
     }
 }

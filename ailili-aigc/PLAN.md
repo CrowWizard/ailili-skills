@@ -185,11 +185,12 @@ A+ 比例（1464:600 等）按宽高比映射到不超过上游上限的 `WxH`�
 
 ## 6. 配置
 
-`$CODEX_HOME/ailili-aigc/config.json`（或 `AILILI_AIGC_HOME`）：
+一份配置：`$AILILI_AIGC_HOME/config.json`，否则 `$CODEX_HOME/ailili-aigc/config.json`，否则 `~/.ailili-aigc/config.json`。生图与生文的 provider 都写在这里；daemon 把 gpt-image-2 的 `GPT_IMAGE_2_CONFIG_FILE` / history / jobs 指到同一 home。若统一配置还没有生图默认，会从 `$CODEX_HOME/gpt-image-2-skill/config.json` 迁入一次。
 
 ```json
 {
   "version": 1,
+  "default_provider": "local-image",
   "default_image_provider": "local-image",
   "default_text_provider": "local-text",
   "providers": {
@@ -232,14 +233,14 @@ CLI：`ailili-aigc config inspect|add-provider`（inspect 脱敏）。以后加 
 - [x] 网关环境变量 `AILILI_TOOL_GATEWAY`（默认 `http://127.0.0.1:8788`）
 - [x] Node 客户端 loopback 时自动 `daemon start`
 - [x] `AILILI_AIGC_FAKE_IMAGE=1` 时 Node 客户端 stdout 为 `Saved full response: ["…png"]`（已本地 smoke）
-- [ ] 配好 gpt-image-2 `default_provider` 后走真实上游出图（需模型 key，不阻塞阶段 1）
+- [x] 生图/生文共用 `$AILILI_AIGC_HOME/config.json`（`default_image_provider` / `default_provider` + `default_text_provider`）
 
 ### 阶段 2 — 生文
 
 - [x] 本 crate 自管 text 任务（不改 gpt-image-2 `QueuedTask`），worker 打 OpenAI-compatible `chat/completions`
 - [x] `/aigc/textGenAsync` + `/aigc/textTaskQuery`
 - [x] Node `--content-only` / `⏎` 不变；loopback 自动 `daemon start`
-- [x] `default_text_provider`（`$AILILI_AIGC_HOME/config.json`）或 `OPENAI_API_KEY`
+- [x] `default_text_provider`（与生图同一份 `$AILILI_AIGC_HOME/config.json`）或 `OPENAI_API_KEY`
 - [x] `AILILI_AIGC_FAKE_TEXT=1`（或 `AILILI_AIGC_FAKE_IMAGE=1`）stub 生文
 
 ### 阶段 3 — 品牌基因

@@ -15,7 +15,7 @@ node scripts/aigc_textgen.cjs --stdin [--content-only] < params.json
 
 网关：`AILILI_TOOL_GATEWAY`（默认 `http://127.0.0.1:8788`）。`POST /aigc/textGenAsync` → 轮询 `/aigc/textTaskQuery`。loopback 且 daemon 未起时，Node 客户端会尝试 `ailili-aigc daemon start`。
 
-文本模型来自 `$AILILI_AIGC_HOME/config.json` 的 `default_text_provider`，或环境变量 `OPENAI_API_KEY` / `OPENAI_API_BASE` / `OPENAI_TEXT_MODEL`。入参里的 `model` / `thinkingLevel` 会被忽略。无上游时可用 `AILILI_AIGC_FAKE_TEXT=1` 做协议联调。
+文本模型来自同一份 `$AILILI_AIGC_HOME/config.json`（与生图共用）的 `default_text_provider`，或环境变量 `OPENAI_API_KEY` / `OPENAI_API_BASE` / `OPENAI_TEXT_MODEL`。入参里的 `model` / `thinkingLevel` 会被忽略。无上游时可用 `AILILI_AIGC_FAKE_TEXT=1` 做协议联调。
 
 ## 参数
 

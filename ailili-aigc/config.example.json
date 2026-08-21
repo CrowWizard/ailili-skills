@@ -1,9 +1,21 @@
 {
   "version": 1,
+  "default_provider": "local-image",
+  "default_image_provider": "local-image",
   "default_text_provider": "local-text",
   "providers": {
+    "local-image": {
+      "type": "openai-compatible",
+      "capability": "image",
+      "api_base": "https://api.openai.com/v1",
+      "model": "gpt-image-2",
+      "credentials": {
+        "api_key": { "source": "env", "env": "OPENAI_API_KEY" }
+      }
+    },
     "local-text": {
       "type": "openai-compatible",
+      "capability": "text",
       "api_base": "https://api.openai.com/v1",
       "model": "gpt-4.1-mini",
       "credentials": {

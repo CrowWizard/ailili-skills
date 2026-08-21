@@ -53,7 +53,8 @@ fn eprint_help() {
            ailili-aigc daemon start|stop|status|foreground\n  \
            ailili-aigc imagegen '<JSON>'\n  \
            ailili-aigc textgen --stdin [--content-only]\n\n\
-         Gateway: AILILI_TOOL_GATEWAY (default http://127.0.0.1:8788)\n",
+         Gateway: AILILI_TOOL_GATEWAY (default http://127.0.0.1:8788)\n  \
+         Config:  $AILILI_AIGC_HOME/config.json (image + text providers)\n",
         env!("CARGO_PKG_VERSION")
     );
 }

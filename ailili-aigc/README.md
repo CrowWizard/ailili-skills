@@ -24,9 +24,12 @@ node skills/ailili-aigc-imagegen-brand-gene-extract/scripts/extract_brand_gene.c
 JSON
 ```
 
-Text models: `$AILILI_AIGC_HOME/config.json` `default_text_provider`, or `OPENAI_API_KEY` + optional `OPENAI_API_BASE` / `OPENAI_TEXT_MODEL`.
+One config: `$AILILI_AIGC_HOME/config.json` (else `$CODEX_HOME/ailili-aigc/config.json`, else `~/.ailili-aigc/config.json`). Copy [config.example.json](config.example.json).
 
-Image jobs: gpt-image-2 `default_provider` under `$CODEX_HOME/gpt-image-2-skill/config.json`.
+- Image: `default_image_provider` (alias `default_provider`)
+- Text: `default_text_provider`, or `OPENAI_API_KEY` + optional `OPENAI_API_BASE` / `OPENAI_TEXT_MODEL`
+
+Daemon start binds gpt-image-2 `GPT_IMAGE_2_CONFIG_FILE` / history / jobs to this home. If the unified file has no image default, it imports `$CODEX_HOME/gpt-image-2-skill/config.json` once.
 
 ## Windows x64 binary
 
