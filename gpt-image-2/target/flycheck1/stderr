@@ -1,0 +1,885 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+   0.304912175s  INFO prepare_target{force=false package_id=gpt-image-2-core v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-core) target="gpt_image_2_core"}: cargo::core::compiler::fingerprint: fingerprint error for gpt-image-2-core v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-core)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("gpt_image_2_core", ["lib"], "/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-core/src/lib.rs", Edition2024) }
+   0.305877431s  INFO prepare_target{force=false package_id=gpt-image-2-core v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-core) target="gpt_image_2_core"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/jswork/ailili-skills/gpt-image-2/target/debug/.fingerprint/gpt-image-2-core-1254ddbe5a5373b8/lib-gpt_image_2_core`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: cargo_util::paths::read_bytes
+   1: cargo_util::paths::read
+   2: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   3: cargo::core::compiler::fingerprint::prepare_target
+   4: cargo::core::compiler::compile
+   5: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   6: cargo::ops::cargo_compile::compile_ws
+   7: cargo::ops::cargo_compile::compile_with_exec
+   8: cargo::ops::cargo_compile::compile
+   9: cargo::commands::check::exec
+  10: <cargo::cli::Exec>::exec
+  11: cargo::main
+  12: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  13: std::rt::lang_start::<()>::{closure#0}
+  14: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
+  15: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  16: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  17: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  18: std::rt::lang_start_internal::{{closure}}
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
+  19: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  20: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  21: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  22: std::rt::lang_start_internal
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
+  23: main
+  24: __libc_start_call_main
+  25: __libc_start_main@@GLIBC_2.34
+  26: <unknown>
+   0.333724473s  INFO prepare_target{force=false package_id=ssh2 v0.9.5 target="ssh2"}: cargo::core::compiler::fingerprint: fingerprint error for ssh2 v0.9.5/Check { test: false }/TargetInner { ..: lib_target("ssh2", ["lib"], "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/ssh2-0.9.5/src/lib.rs", Edition2015) }
+   0.333776698s  INFO prepare_target{force=false package_id=ssh2 v0.9.5 target="ssh2"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/jswork/ailili-skills/gpt-image-2/target/debug/.fingerprint/ssh2-83bd280dbb7c31d0/lib-ssh2`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: cargo_util::paths::read_bytes
+   1: cargo_util::paths::read
+   2: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   3: cargo::core::compiler::fingerprint::prepare_target
+   4: cargo::core::compiler::compile
+   5: cargo::core::compiler::compile
+   6: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   7: cargo::ops::cargo_compile::compile_ws
+   8: cargo::ops::cargo_compile::compile_with_exec
+   9: cargo::ops::cargo_compile::compile
+  10: cargo::commands::check::exec
+  11: <cargo::cli::Exec>::exec
+  12: cargo::main
+  13: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  14: std::rt::lang_start::<()>::{closure#0}
+  15: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
+  16: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  17: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  18: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  19: std::rt::lang_start_internal::{{closure}}
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
+  20: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  21: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  22: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  23: std::rt::lang_start_internal
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
+  24: main
+  25: __libc_start_call_main
+  26: __libc_start_main@@GLIBC_2.34
+  27: <unknown>
+   0.334125304s  INFO prepare_target{force=false package_id=libssh2-sys v0.3.1 target="libssh2_sys"}: cargo::core::compiler::fingerprint: fingerprint error for libssh2-sys v0.3.1/Check { test: false }/TargetInner { ..: lib_target("libssh2_sys", ["lib"], "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libssh2-sys-0.3.1/lib.rs", Edition2015) }
+   0.334149198s  INFO prepare_target{force=false package_id=libssh2-sys v0.3.1 target="libssh2_sys"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/jswork/ailili-skills/gpt-image-2/target/debug/.fingerprint/libssh2-sys-4835393ef1f8f21d/lib-libssh2_sys`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: cargo_util::paths::read_bytes
+   1: cargo_util::paths::read
+   2: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   3: cargo::core::compiler::fingerprint::prepare_target
+   4: cargo::core::compiler::compile
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   8: cargo::ops::cargo_compile::compile_ws
+   9: cargo::ops::cargo_compile::compile_with_exec
+  10: cargo::ops::cargo_compile::compile
+  11: cargo::commands::check::exec
+  12: <cargo::cli::Exec>::exec
+  13: cargo::main
+  14: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  15: std::rt::lang_start::<()>::{closure#0}
+  16: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
+  17: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  18: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  19: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  20: std::rt::lang_start_internal::{{closure}}
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
+  21: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  22: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  23: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  24: std::rt::lang_start_internal
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
+  25: main
+  26: __libc_start_call_main
+  27: __libc_start_main@@GLIBC_2.34
+  28: <unknown>
+   0.334589199s  INFO prepare_target{force=false package_id=libssh2-sys v0.3.1 target="build-script-build"}: cargo::core::compiler::fingerprint: fingerprint error for libssh2-sys v0.3.1/RunCustomBuild/TargetInner { ..: custom_build_target("build-script-build", "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/libssh2-sys-0.3.1/build.rs", Edition2015) }
+   0.334615801s  INFO prepare_target{force=false package_id=libssh2-sys v0.3.1 target="build-script-build"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/jswork/ailili-skills/gpt-image-2/target/debug/.fingerprint/libssh2-sys-d7645518e42efa13/run-build-script-build-script-build`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: cargo_util::paths::read_bytes
+   1: cargo_util::paths::read
+   2: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   3: cargo::core::compiler::fingerprint::prepare_target
+   4: cargo::core::compiler::custom_build::build_work
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: cargo::core::compiler::compile
+   9: <cargo::core::compiler::build_runner::BuildRunner>::compile
+  10: cargo::ops::cargo_compile::compile_ws
+  11: cargo::ops::cargo_compile::compile_with_exec
+  12: cargo::ops::cargo_compile::compile
+  13: cargo::commands::check::exec
+  14: <cargo::cli::Exec>::exec
+  15: cargo::main
+  16: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  17: std::rt::lang_start::<()>::{closure#0}
+  18: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
+  19: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  20: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  21: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  22: std::rt::lang_start_internal::{{closure}}
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
+  23: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  24: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  25: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  26: std::rt::lang_start_internal
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
+  27: main
+  28: __libc_start_call_main
+  29: __libc_start_main@@GLIBC_2.34
+  30: <unknown>
+   0.335155677s  INFO prepare_target{force=false package_id=openssl-sys v0.9.115 target="build-script-main"}: cargo::core::compiler::fingerprint: fingerprint error for openssl-sys v0.9.115/RunCustomBuild/TargetInner { ..: custom_build_target("build-script-main", "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/openssl-sys-0.9.115/build/main.rs", Edition2021) }
+   0.335181664s  INFO prepare_target{force=false package_id=openssl-sys v0.9.115 target="build-script-main"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/jswork/ailili-skills/gpt-image-2/target/debug/.fingerprint/openssl-sys-de715af8f5c55b78/run-build-script-build-script-main`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: cargo_util::paths::read_bytes
+   1: cargo_util::paths::read
+   2: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   3: cargo::core::compiler::fingerprint::prepare_target
+   4: cargo::core::compiler::custom_build::build_work
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: cargo::core::compiler::compile
+   9: cargo::core::compiler::compile
+  10: <cargo::core::compiler::build_runner::BuildRunner>::compile
+  11: cargo::ops::cargo_compile::compile_ws
+  12: cargo::ops::cargo_compile::compile_with_exec
+  13: cargo::ops::cargo_compile::compile
+  14: cargo::commands::check::exec
+  15: <cargo::cli::Exec>::exec
+  16: cargo::main
+  17: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  18: std::rt::lang_start::<()>::{closure#0}
+  19: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
+  20: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  21: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  22: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  23: std::rt::lang_start_internal::{{closure}}
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
+  24: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  25: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  26: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  27: std::rt::lang_start_internal
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
+  28: main
+  29: __libc_start_call_main
+  30: __libc_start_main@@GLIBC_2.34
+  31: <unknown>
+   0.335499193s  INFO prepare_target{force=false package_id=openssl-sys v0.9.115 target="openssl_sys"}: cargo::core::compiler::fingerprint: fingerprint error for openssl-sys v0.9.115/Check { test: false }/TargetInner { ..: lib_target("openssl_sys", ["lib"], "/root/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/openssl-sys-0.9.115/src/lib.rs", Edition2021) }
+   0.335739082s  INFO prepare_target{force=false package_id=openssl-sys v0.9.115 target="openssl_sys"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/jswork/ailili-skills/gpt-image-2/target/debug/.fingerprint/openssl-sys-900ec1fd36c9a653/lib-openssl_sys`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: cargo_util::paths::read_bytes
+   1: cargo_util::paths::read
+   2: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   3: cargo::core::compiler::fingerprint::prepare_target
+   4: cargo::core::compiler::compile
+   5: cargo::core::compiler::compile
+   6: cargo::core::compiler::compile
+   7: cargo::core::compiler::compile
+   8: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   9: cargo::ops::cargo_compile::compile_ws
+  10: cargo::ops::cargo_compile::compile_with_exec
+  11: cargo::ops::cargo_compile::compile
+  12: cargo::commands::check::exec
+  13: <cargo::cli::Exec>::exec
+  14: cargo::main
+  15: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  16: std::rt::lang_start::<()>::{closure#0}
+  17: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
+  18: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  19: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  20: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  21: std::rt::lang_start_internal::{{closure}}
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
+  22: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  23: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  24: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  25: std::rt::lang_start_internal
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
+  26: main
+  27: __libc_start_call_main
+  28: __libc_start_main@@GLIBC_2.34
+  29: <unknown>
+   0.337560119s  INFO prepare_target{force=false package_id=gpt-image-2-core v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-core) target="gpt_image_2_core"}: cargo::core::compiler::fingerprint: fingerprint error for gpt-image-2-core v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-core)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("gpt_image_2_core", ["lib"], "/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-core/src/lib.rs", Edition2024) }
+   0.337605069s  INFO prepare_target{force=false package_id=gpt-image-2-core v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-core) target="gpt_image_2_core"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/jswork/ailili-skills/gpt-image-2/target/debug/.fingerprint/gpt-image-2-core-7a324adf60684ca2/test-lib-gpt_image_2_core`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: cargo_util::paths::read_bytes
+   1: cargo_util::paths::read
+   2: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   3: cargo::core::compiler::fingerprint::prepare_target
+   4: cargo::core::compiler::compile
+   5: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   6: cargo::ops::cargo_compile::compile_ws
+   7: cargo::ops::cargo_compile::compile_with_exec
+   8: cargo::ops::cargo_compile::compile
+   9: cargo::commands::check::exec
+  10: <cargo::cli::Exec>::exec
+  11: cargo::main
+  12: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  13: std::rt::lang_start::<()>::{closure#0}
+  14: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
+  15: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  16: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  17: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  18: std::rt::lang_start_internal::{{closure}}
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
+  19: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  20: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  21: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  22: std::rt::lang_start_internal
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
+  23: main
+  24: __libc_start_call_main
+  25: __libc_start_main@@GLIBC_2.34
+  26: <unknown>
+   0.339104861s  INFO prepare_target{force=false package_id=gpt-image-2-runtime v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-runtime) target="gpt_image_2_runtime"}: cargo::core::compiler::fingerprint: fingerprint error for gpt-image-2-runtime v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-runtime)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("gpt_image_2_runtime", ["lib"], "/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-runtime/src/lib.rs", Edition2024) }
+   0.339165238s  INFO prepare_target{force=false package_id=gpt-image-2-runtime v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-runtime) target="gpt_image_2_runtime"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/jswork/ailili-skills/gpt-image-2/target/debug/.fingerprint/gpt-image-2-runtime-8f24148f57de7fc4/lib-gpt_image_2_runtime`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: cargo_util::paths::read_bytes
+   1: cargo_util::paths::read
+   2: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   3: cargo::core::compiler::fingerprint::prepare_target
+   4: cargo::core::compiler::compile
+   5: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   6: cargo::ops::cargo_compile::compile_ws
+   7: cargo::ops::cargo_compile::compile_with_exec
+   8: cargo::ops::cargo_compile::compile
+   9: cargo::commands::check::exec
+  10: <cargo::cli::Exec>::exec
+  11: cargo::main
+  12: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  13: std::rt::lang_start::<()>::{closure#0}
+  14: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
+  15: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  16: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  17: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  18: std::rt::lang_start_internal::{{closure}}
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
+  19: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  20: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  21: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  22: std::rt::lang_start_internal
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
+  23: main
+  24: __libc_start_call_main
+  25: __libc_start_main@@GLIBC_2.34
+  26: <unknown>
+   0.340211078s  INFO prepare_target{force=false package_id=gpt-image-2-runtime v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-runtime) target="gpt_image_2_runtime"}: cargo::core::compiler::fingerprint: fingerprint error for gpt-image-2-runtime v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-runtime)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("gpt_image_2_runtime", ["lib"], "/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-runtime/src/lib.rs", Edition2024) }
+   0.340252701s  INFO prepare_target{force=false package_id=gpt-image-2-runtime v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-runtime) target="gpt_image_2_runtime"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/jswork/ailili-skills/gpt-image-2/target/debug/.fingerprint/gpt-image-2-runtime-48b6d11b2d47ae50/test-lib-gpt_image_2_runtime`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: cargo_util::paths::read_bytes
+   1: cargo_util::paths::read
+   2: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   3: cargo::core::compiler::fingerprint::prepare_target
+   4: cargo::core::compiler::compile
+   5: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   6: cargo::ops::cargo_compile::compile_ws
+   7: cargo::ops::cargo_compile::compile_with_exec
+   8: cargo::ops::cargo_compile::compile
+   9: cargo::commands::check::exec
+  10: <cargo::cli::Exec>::exec
+  11: cargo::main
+  12: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  13: std::rt::lang_start::<()>::{closure#0}
+  14: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
+  15: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  16: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  17: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  18: std::rt::lang_start_internal::{{closure}}
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
+  19: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  20: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  21: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  22: std::rt::lang_start_internal
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
+  23: main
+  24: __libc_start_call_main
+  25: __libc_start_main@@GLIBC_2.34
+  26: <unknown>
+   0.341865683s  INFO prepare_target{force=false package_id=gpt-image-2-skill v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-skill) target="gpt_image_2_skill"}: cargo::core::compiler::fingerprint: fingerprint error for gpt-image-2-skill v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-skill)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("gpt_image_2_skill", ["lib"], "/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-skill/src/lib.rs", Edition2024) }
+   0.341926970s  INFO prepare_target{force=false package_id=gpt-image-2-skill v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-skill) target="gpt_image_2_skill"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/jswork/ailili-skills/gpt-image-2/target/debug/.fingerprint/gpt-image-2-skill-618e27070490de19/lib-gpt_image_2_skill`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: cargo_util::paths::read_bytes
+   1: cargo_util::paths::read
+   2: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   3: cargo::core::compiler::fingerprint::prepare_target
+   4: cargo::core::compiler::compile
+   5: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   6: cargo::ops::cargo_compile::compile_ws
+   7: cargo::ops::cargo_compile::compile_with_exec
+   8: cargo::ops::cargo_compile::compile
+   9: cargo::commands::check::exec
+  10: <cargo::cli::Exec>::exec
+  11: cargo::main
+  12: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  13: std::rt::lang_start::<()>::{closure#0}
+  14: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
+  15: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  16: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  17: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  18: std::rt::lang_start_internal::{{closure}}
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
+  19: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  20: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  21: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  22: std::rt::lang_start_internal
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
+  23: main
+  24: __libc_start_call_main
+  25: __libc_start_main@@GLIBC_2.34
+  26: <unknown>
+   0.343127618s  INFO prepare_target{force=false package_id=gpt-image-2-web v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-web) target="gpt_image_2_web"}: cargo::core::compiler::fingerprint: fingerprint error for gpt-image-2-web v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-web)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("gpt_image_2_web", ["lib"], "/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-web/src/lib.rs", Edition2024) }
+   0.343183342s  INFO prepare_target{force=false package_id=gpt-image-2-web v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-web) target="gpt_image_2_web"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/jswork/ailili-skills/gpt-image-2/target/debug/.fingerprint/gpt-image-2-web-1c38b9c3dfe0a644/lib-gpt_image_2_web`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: cargo_util::paths::read_bytes
+   1: cargo_util::paths::read
+   2: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   3: cargo::core::compiler::fingerprint::prepare_target
+   4: cargo::core::compiler::compile
+   5: cargo::core::compiler::compile
+   6: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   7: cargo::ops::cargo_compile::compile_ws
+   8: cargo::ops::cargo_compile::compile_with_exec
+   9: cargo::ops::cargo_compile::compile
+  10: cargo::commands::check::exec
+  11: <cargo::cli::Exec>::exec
+  12: cargo::main
+  13: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  14: std::rt::lang_start::<()>::{closure#0}
+  15: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
+  16: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  17: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  18: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  19: std::rt::lang_start_internal::{{closure}}
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
+  20: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  21: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  22: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  23: std::rt::lang_start_internal
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
+  24: main
+  25: __libc_start_call_main
+  26: __libc_start_main@@GLIBC_2.34
+  27: <unknown>
+   0.344714570s  INFO prepare_target{force=false package_id=gpt-image-2-skill v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-skill) target="gpt_image_2_skill"}: cargo::core::compiler::fingerprint: fingerprint error for gpt-image-2-skill v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-skill)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("gpt_image_2_skill", ["lib"], "/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-skill/src/lib.rs", Edition2024) }
+   0.344757944s  INFO prepare_target{force=false package_id=gpt-image-2-skill v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-skill) target="gpt_image_2_skill"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/jswork/ailili-skills/gpt-image-2/target/debug/.fingerprint/gpt-image-2-skill-14d4d9def3bd2283/test-lib-gpt_image_2_skill`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: cargo_util::paths::read_bytes
+   1: cargo_util::paths::read
+   2: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   3: cargo::core::compiler::fingerprint::prepare_target
+   4: cargo::core::compiler::compile
+   5: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   6: cargo::ops::cargo_compile::compile_ws
+   7: cargo::ops::cargo_compile::compile_with_exec
+   8: cargo::ops::cargo_compile::compile
+   9: cargo::commands::check::exec
+  10: <cargo::cli::Exec>::exec
+  11: cargo::main
+  12: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  13: std::rt::lang_start::<()>::{closure#0}
+  14: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
+  15: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  16: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  17: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  18: std::rt::lang_start_internal::{{closure}}
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
+  19: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  20: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  21: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  22: std::rt::lang_start_internal
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
+  23: main
+  24: __libc_start_call_main
+  25: __libc_start_main@@GLIBC_2.34
+  26: <unknown>
+   0.346038203s  INFO prepare_target{force=false package_id=gpt-image-2-skill v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-skill) target="gpt-image-2-skill"}: cargo::core::compiler::fingerprint: fingerprint error for gpt-image-2-skill v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-skill)/Check { test: false }/TargetInner { name: "gpt-image-2-skill", doc: true, ..: with_path("/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-skill/src/main.rs", Edition2024) }
+   0.346092882s  INFO prepare_target{force=false package_id=gpt-image-2-skill v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-skill) target="gpt-image-2-skill"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/jswork/ailili-skills/gpt-image-2/target/debug/.fingerprint/gpt-image-2-skill-e42ca61a850e9724/bin-gpt-image-2-skill`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: cargo_util::paths::read_bytes
+   1: cargo_util::paths::read
+   2: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   3: cargo::core::compiler::fingerprint::prepare_target
+   4: cargo::core::compiler::compile
+   5: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   6: cargo::ops::cargo_compile::compile_ws
+   7: cargo::ops::cargo_compile::compile_with_exec
+   8: cargo::ops::cargo_compile::compile
+   9: cargo::commands::check::exec
+  10: <cargo::cli::Exec>::exec
+  11: cargo::main
+  12: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  13: std::rt::lang_start::<()>::{closure#0}
+  14: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
+  15: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  16: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  17: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  18: std::rt::lang_start_internal::{{closure}}
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
+  19: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  20: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  21: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  22: std::rt::lang_start_internal
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
+  23: main
+  24: __libc_start_call_main
+  25: __libc_start_main@@GLIBC_2.34
+  26: <unknown>
+   0.347139791s  INFO prepare_target{force=false package_id=gpt-image-2-skill v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-skill) target="gpt-image-2-skill"}: cargo::core::compiler::fingerprint: fingerprint error for gpt-image-2-skill v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-skill)/Check { test: true }/TargetInner { name: "gpt-image-2-skill", doc: true, ..: with_path("/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-skill/src/main.rs", Edition2024) }
+   0.347176097s  INFO prepare_target{force=false package_id=gpt-image-2-skill v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-skill) target="gpt-image-2-skill"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/jswork/ailili-skills/gpt-image-2/target/debug/.fingerprint/gpt-image-2-skill-d50831869cdb68b0/test-bin-gpt-image-2-skill`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: cargo_util::paths::read_bytes
+   1: cargo_util::paths::read
+   2: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   3: cargo::core::compiler::fingerprint::prepare_target
+   4: cargo::core::compiler::compile
+   5: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   6: cargo::ops::cargo_compile::compile_ws
+   7: cargo::ops::cargo_compile::compile_with_exec
+   8: cargo::ops::cargo_compile::compile
+   9: cargo::commands::check::exec
+  10: <cargo::cli::Exec>::exec
+  11: cargo::main
+  12: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  13: std::rt::lang_start::<()>::{closure#0}
+  14: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
+  15: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  16: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  17: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  18: std::rt::lang_start_internal::{{closure}}
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
+  19: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  20: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  21: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  22: std::rt::lang_start_internal
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
+  23: main
+  24: __libc_start_call_main
+  25: __libc_start_main@@GLIBC_2.34
+  26: <unknown>
+   0.348758436s  INFO prepare_target{force=false package_id=gpt-image-2-web v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-web) target="gpt_image_2_web"}: cargo::core::compiler::fingerprint: fingerprint error for gpt-image-2-web v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-web)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("gpt_image_2_web", ["lib"], "/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-web/src/lib.rs", Edition2024) }
+   0.348818553s  INFO prepare_target{force=false package_id=gpt-image-2-web v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-web) target="gpt_image_2_web"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/jswork/ailili-skills/gpt-image-2/target/debug/.fingerprint/gpt-image-2-web-3c51de73eb2bc1bd/test-lib-gpt_image_2_web`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: cargo_util::paths::read_bytes
+   1: cargo_util::paths::read
+   2: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   3: cargo::core::compiler::fingerprint::prepare_target
+   4: cargo::core::compiler::compile
+   5: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   6: cargo::ops::cargo_compile::compile_ws
+   7: cargo::ops::cargo_compile::compile_with_exec
+   8: cargo::ops::cargo_compile::compile
+   9: cargo::commands::check::exec
+  10: <cargo::cli::Exec>::exec
+  11: cargo::main
+  12: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  13: std::rt::lang_start::<()>::{closure#0}
+  14: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
+  15: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  16: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  17: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  18: std::rt::lang_start_internal::{{closure}}
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
+  19: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  20: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  21: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  22: std::rt::lang_start_internal
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
+  23: main
+  24: __libc_start_call_main
+  25: __libc_start_main@@GLIBC_2.34
+  26: <unknown>
+   0.350701958s  INFO prepare_target{force=false package_id=gpt-image-2-web v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-web) target="gpt-image-2-web"}: cargo::core::compiler::fingerprint: fingerprint error for gpt-image-2-web v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-web)/Check { test: false }/TargetInner { name: "gpt-image-2-web", doc: true, ..: with_path("/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-web/src/main.rs", Edition2024) }
+   0.350752486s  INFO prepare_target{force=false package_id=gpt-image-2-web v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-web) target="gpt-image-2-web"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/jswork/ailili-skills/gpt-image-2/target/debug/.fingerprint/gpt-image-2-web-e5c653f51bdf6d58/bin-gpt-image-2-web`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: cargo_util::paths::read_bytes
+   1: cargo_util::paths::read
+   2: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   3: cargo::core::compiler::fingerprint::prepare_target
+   4: cargo::core::compiler::compile
+   5: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   6: cargo::ops::cargo_compile::compile_ws
+   7: cargo::ops::cargo_compile::compile_with_exec
+   8: cargo::ops::cargo_compile::compile
+   9: cargo::commands::check::exec
+  10: <cargo::cli::Exec>::exec
+  11: cargo::main
+  12: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  13: std::rt::lang_start::<()>::{closure#0}
+  14: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
+  15: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  16: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  17: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  18: std::rt::lang_start_internal::{{closure}}
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
+  19: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  20: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  21: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  22: std::rt::lang_start_internal
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
+  23: main
+  24: __libc_start_call_main
+  25: __libc_start_main@@GLIBC_2.34
+  26: <unknown>
+   0.352281768s  INFO prepare_target{force=false package_id=gpt-image-2-web v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-web) target="gpt-image-2-web"}: cargo::core::compiler::fingerprint: fingerprint error for gpt-image-2-web v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-web)/Check { test: true }/TargetInner { name: "gpt-image-2-web", doc: true, ..: with_path("/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-web/src/main.rs", Edition2024) }
+   0.352329102s  INFO prepare_target{force=false package_id=gpt-image-2-web v0.7.3 (/home/jswork/ailili-skills/gpt-image-2/crates/gpt-image-2-web) target="gpt-image-2-web"}: cargo::core::compiler::fingerprint:     err: failed to read `/home/jswork/ailili-skills/gpt-image-2/target/debug/.fingerprint/gpt-image-2-web-67fcb4914896e9ed/test-bin-gpt-image-2-web`
+
+Caused by:
+    No such file or directory (os error 2)
+
+Stack backtrace:
+   0: cargo_util::paths::read_bytes
+   1: cargo_util::paths::read
+   2: cargo::core::compiler::fingerprint::_compare_old_fingerprint
+   3: cargo::core::compiler::fingerprint::prepare_target
+   4: cargo::core::compiler::compile
+   5: <cargo::core::compiler::build_runner::BuildRunner>::compile
+   6: cargo::ops::cargo_compile::compile_ws
+   7: cargo::ops::cargo_compile::compile_with_exec
+   8: cargo::ops::cargo_compile::compile
+   9: cargo::commands::check::exec
+  10: <cargo::cli::Exec>::exec
+  11: cargo::main
+  12: std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()>
+  13: std::rt::lang_start::<()>::{closure#0}
+  14: core::ops::function::impls::<impl core::ops::function::FnOnce<A> for &F>::call_once
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/core/src/ops/function.rs:287:21
+  15: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  16: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  17: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  18: std::rt::lang_start_internal::{{closure}}
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:175:24
+  19: std::panicking::catch_unwind::do_call
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:581:40
+  20: std::panicking::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panicking.rs:544:19
+  21: std::panic::catch_unwind
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/panic.rs:359:14
+  22: std::rt::lang_start_internal
+             at /rustc/e408947bfd200af42db322daf0fadfe7e26d3bd1/library/std/src/rt.rs:171:5
+  23: main
+  24: __libc_start_call_main
+  25: __libc_start_main@@GLIBC_2.34
+  26: <unknown>
+   Compiling openssl-sys v0.9.115
+warning: openssl-sys@0.9.115: configuring OpenSSL build: 'perl' reported failure with exit status: 2
+warning: openssl-sys@0.9.115: openssl-src: failed to build OpenSSL from source
+error: failed to run custom build command for `openssl-sys v0.9.115`
+note: To improve backtraces for build dependencies, set the CARGO_PROFILE_DEV_BUILD_OVERRIDE_DEBUG=true environment variable to enable debug information generation.
+
+Caused by:
+  process didn't exit successfully: `/home/jswork/ailili-skills/gpt-image-2/target/debug/build/openssl-sys-444de4a72d625b16/build-script-main` (exit status: 1)
+  --- stdout
+  cargo:rustc-check-cfg=cfg(osslconf, values("OPENSSL_NO_OCB", "OPENSSL_NO_SM4", "OPENSSL_NO_SEED", "OPENSSL_NO_CHACHA", "OPENSSL_NO_CAST", "OPENSSL_NO_IDEA", "OPENSSL_NO_CAMELLIA", "OPENSSL_NO_RC4", "OPENSSL_NO_BF", "OPENSSL_NO_PSK", "OPENSSL_NO_DEPRECATED_3_0", "OPENSSL_NO_SCRYPT", "OPENSSL_NO_SM3", "OPENSSL_NO_RMD160", "OPENSSL_NO_EC2M", "OPENSSL_NO_OCSP", "OPENSSL_NO_CMS", "OPENSSL_NO_COMP", "OPENSSL_NO_SOCK", "OPENSSL_NO_STDIO", "OPENSSL_NO_EC", "OPENSSL_NO_SSL3_METHOD", "OPENSSL_NO_KRB5", "OPENSSL_NO_TLSEXT", "OPENSSL_NO_SRP", "OPENSSL_NO_SRTP", "OPENSSL_NO_RFC3779", "OPENSSL_NO_SHA", "OPENSSL_NO_NEXTPROTONEG", "OPENSSL_NO_ENGINE", "OPENSSL_NO_BUF_FREELISTS", "OPENSSL_NO_RC2"))
+  cargo:rustc-check-cfg=cfg(openssl)
+  cargo:rustc-check-cfg=cfg(libressl)
+  cargo:rustc-check-cfg=cfg(boringssl)
+  cargo:rustc-check-cfg=cfg(awslc)
+  cargo:rustc-check-cfg=cfg(awslc_pregenerated)
+  cargo:rustc-check-cfg=cfg(libressl250)
+  cargo:rustc-check-cfg=cfg(libressl251)
+  cargo:rustc-check-cfg=cfg(libressl252)
+  cargo:rustc-check-cfg=cfg(libressl261)
+  cargo:rustc-check-cfg=cfg(libressl270)
+  cargo:rustc-check-cfg=cfg(libressl271)
+  cargo:rustc-check-cfg=cfg(libressl273)
+  cargo:rustc-check-cfg=cfg(libressl280)
+  cargo:rustc-check-cfg=cfg(libressl281)
+  cargo:rustc-check-cfg=cfg(libressl291)
+  cargo:rustc-check-cfg=cfg(libressl310)
+  cargo:rustc-check-cfg=cfg(libressl321)
+  cargo:rustc-check-cfg=cfg(libressl332)
+  cargo:rustc-check-cfg=cfg(libressl340)
+  cargo:rustc-check-cfg=cfg(libressl350)
+  cargo:rustc-check-cfg=cfg(libressl360)
+  cargo:rustc-check-cfg=cfg(libressl361)
+  cargo:rustc-check-cfg=cfg(libressl370)
+  cargo:rustc-check-cfg=cfg(libressl380)
+  cargo:rustc-check-cfg=cfg(libressl381)
+  cargo:rustc-check-cfg=cfg(libressl382)
+  cargo:rustc-check-cfg=cfg(libressl390)
+  cargo:rustc-check-cfg=cfg(libressl400)
+  cargo:rustc-check-cfg=cfg(libressl410)
+  cargo:rustc-check-cfg=cfg(libressl420)
+  cargo:rustc-check-cfg=cfg(libressl430)
+  cargo:rustc-check-cfg=cfg(ossl101)
+  cargo:rustc-check-cfg=cfg(ossl102)
+  cargo:rustc-check-cfg=cfg(ossl102f)
+  cargo:rustc-check-cfg=cfg(ossl102h)
+  cargo:rustc-check-cfg=cfg(ossl110)
+  cargo:rustc-check-cfg=cfg(ossl110f)
+  cargo:rustc-check-cfg=cfg(ossl110g)
+  cargo:rustc-check-cfg=cfg(ossl110h)
+  cargo:rustc-check-cfg=cfg(ossl111)
+  cargo:rustc-check-cfg=cfg(ossl111b)
+  cargo:rustc-check-cfg=cfg(ossl111c)
+  cargo:rustc-check-cfg=cfg(ossl111d)
+  cargo:rustc-check-cfg=cfg(ossl300)
+  cargo:rustc-check-cfg=cfg(ossl310)
+  cargo:rustc-check-cfg=cfg(ossl320)
+  cargo:rustc-check-cfg=cfg(ossl330)
+  cargo:rustc-check-cfg=cfg(ossl340)
+  cargo:rustc-check-cfg=cfg(ossl400)
+  cargo:rerun-if-env-changed=X86_64_UNKNOWN_LINUX_GNU_OPENSSL_NO_VENDOR
+  X86_64_UNKNOWN_LINUX_GNU_OPENSSL_NO_VENDOR unset
+  cargo:rerun-if-env-changed=OPENSSL_NO_VENDOR
+  OPENSSL_NO_VENDOR unset
+  cargo:rerun-if-env-changed=X86_64_UNKNOWN_LINUX_GNU_OPENSSL_CONFIG_DIR
+  X86_64_UNKNOWN_LINUX_GNU_OPENSSL_CONFIG_DIR unset
+  cargo:rerun-if-env-changed=OPENSSL_CONFIG_DIR
+  OPENSSL_CONFIG_DIR unset
+  cargo:rerun-if-env-changed=CC_x86_64-unknown-linux-gnu
+  CC_x86_64-unknown-linux-gnu = None
+  cargo:rerun-if-env-changed=CC_x86_64_unknown_linux_gnu
+  CC_x86_64_unknown_linux_gnu = None
+  cargo:rerun-if-env-changed=HOST_CC
+  HOST_CC = None
+  cargo:rerun-if-env-changed=CC
+  CC = None
+  cargo:rerun-if-env-changed=CC_ENABLE_DEBUG_OUTPUT
+  cargo:rerun-if-env-changed=CRATE_CC_NO_DEFAULTS
+  CRATE_CC_NO_DEFAULTS = None
+  cargo:rerun-if-env-changed=CFLAGS
+  CFLAGS = None
+  cargo:rerun-if-env-changed=HOST_CFLAGS
+  HOST_CFLAGS = None
+  cargo:rerun-if-env-changed=CFLAGS_x86_64_unknown_linux_gnu
+  CFLAGS_x86_64_unknown_linux_gnu = None
+  cargo:rerun-if-env-changed=CFLAGS_x86_64-unknown-linux-gnu
+  CFLAGS_x86_64-unknown-linux-gnu = None
+  cargo:rerun-if-env-changed=AR_x86_64-unknown-linux-gnu
+  AR_x86_64-unknown-linux-gnu = None
+  cargo:rerun-if-env-changed=AR_x86_64_unknown_linux_gnu
+  AR_x86_64_unknown_linux_gnu = None
+  cargo:rerun-if-env-changed=HOST_AR
+  HOST_AR = None
+  cargo:rerun-if-env-changed=AR
+  AR = None
+  cargo:rerun-if-env-changed=ARFLAGS
+  ARFLAGS = None
+  cargo:rerun-if-env-changed=HOST_ARFLAGS
+  HOST_ARFLAGS = None
+  cargo:rerun-if-env-changed=ARFLAGS_x86_64_unknown_linux_gnu
+  ARFLAGS_x86_64_unknown_linux_gnu = None
+  cargo:rerun-if-env-changed=ARFLAGS_x86_64-unknown-linux-gnu
+  ARFLAGS_x86_64-unknown-linux-gnu = None
+  cargo:rerun-if-env-changed=RANLIB_x86_64-unknown-linux-gnu
+  RANLIB_x86_64-unknown-linux-gnu = None
+  cargo:rerun-if-env-changed=RANLIB_x86_64_unknown_linux_gnu
+  RANLIB_x86_64_unknown_linux_gnu = None
+  cargo:rerun-if-env-changed=HOST_RANLIB
+  HOST_RANLIB = None
+  cargo:rerun-if-env-changed=RANLIB
+  RANLIB = None
+  cargo:rerun-if-env-changed=RANLIBFLAGS
+  RANLIBFLAGS = None
+  cargo:rerun-if-env-changed=HOST_RANLIBFLAGS
+  HOST_RANLIBFLAGS = None
+  cargo:rerun-if-env-changed=RANLIBFLAGS_x86_64_unknown_linux_gnu
+  RANLIBFLAGS_x86_64_unknown_linux_gnu = None
+  cargo:rerun-if-env-changed=RANLIBFLAGS_x86_64-unknown-linux-gnu
+  RANLIBFLAGS_x86_64-unknown-linux-gnu = None
+  running cd "/home/jswork/ailili-skills/gpt-image-2/target/debug/build/openssl-sys-de715af8f5c55b78/out/openssl-build/build/src" && env -u CROSS_COMPILE AR="ar" CC="cc" RANLIB="ranlib" "perl" "./Configure" "--prefix=/home/jswork/ailili-skills/gpt-image-2/target/debug/build/openssl-sys-de715af8f5c55b78/out/openssl-build/install" "--openssldir=/usr/local/ssl" "no-shared" "no-module" "no-tests" "no-comp" "no-zlib" "no-zlib-dynamic" "--libdir=lib" "no-ssl3" "no-md2" "no-rc5" "no-weak-ssl-ciphers" "no-camellia" "no-idea" "no-seed" "linux-x86_64" "-O2" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-gdwarf-4" "-fno-omit-frame-pointer" "-m64" "-w"
+  cargo:warning=configuring OpenSSL build: 'perl' reported failure with exit status: 2
+  cargo:warning=openssl-src: failed to build OpenSSL from source
+
+  --- stderr
+  Can't locate IPC/Cmd.pm in @INC (you may need to install the IPC::Cmd module) (@INC contains: /home/jswork/ailili-skills/gpt-image-2/target/debug/build/openssl-sys-de715af8f5c55b78/out/openssl-build/build/src/util/perl /usr/local/lib64/perl5/5.32 /usr/local/share/perl5/5.32 /usr/lib64/perl5/vendor_perl /usr/share/perl5/vendor_perl /usr/lib64/perl5 /usr/share/perl5 /home/jswork/ailili-skills/gpt-image-2/target/debug/build/openssl-sys-de715af8f5c55b78/out/openssl-build/build/src/external/perl/Text-Template-1.56/lib) at /home/jswork/ailili-skills/gpt-image-2/target/debug/build/openssl-sys-de715af8f5c55b78/out/openssl-build/build/src/util/perl/OpenSSL/config.pm line 19.
+  BEGIN failed--compilation aborted at /home/jswork/ailili-skills/gpt-image-2/target/debug/build/openssl-sys-de715af8f5c55b78/out/openssl-build/build/src/util/perl/OpenSSL/config.pm line 19.
+  Compilation failed in require at ./Configure line 23.
+  BEGIN failed--compilation aborted at ./Configure line 23.
+
+
+
+  Error configuring OpenSSL build:
+      'perl' reported failure with exit status: 2
+      Command failed: cd "/home/jswork/ailili-skills/gpt-image-2/target/debug/build/openssl-sys-de715af8f5c55b78/out/openssl-build/build/src" && env -u CROSS_COMPILE AR="ar" CC="cc" RANLIB="ranlib" "perl" "./Configure" "--prefix=/home/jswork/ailili-skills/gpt-image-2/target/debug/build/openssl-sys-de715af8f5c55b78/out/openssl-build/install" "--openssldir=/usr/local/ssl" "no-shared" "no-module" "no-tests" "no-comp" "no-zlib" "no-zlib-dynamic" "--libdir=lib" "no-ssl3" "no-md2" "no-rc5" "no-weak-ssl-ciphers" "no-camellia" "no-idea" "no-seed" "linux-x86_64" "-O2" "-ffunction-sections" "-fdata-sections" "-fPIC" "-g" "-gdwarf-4" "-fno-omit-frame-pointer" "-m64" "-w"
+
+
+

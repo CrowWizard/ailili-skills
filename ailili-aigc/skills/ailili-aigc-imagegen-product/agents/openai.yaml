@@ -1,0 +1,8 @@
+interface:
+  display_name: "Ailili 商品图"
+  short_description: "Product stills and collections via Node pipeline"
+  default_prompt: |
+    Use Node scripts in this skill. Collection path: plan → AskUserQuestion → one dispatch
+    Bash (returns immediately) → poll status until done → summary. Do not Python.
+    Do not Start-Process / sleep for minutes. Do not fan out run_one_task yourself.
+    Gateway is $AILILI_TOOL_GATEWAY (default http://127.0.0.1:8788).

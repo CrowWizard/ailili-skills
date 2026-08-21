@@ -1,0 +1,18 @@
+[package]
+name = "ailili-aigc"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Local LinkFox-compatible AIGC CLI (daemon + jobs)."
+
+[dependencies]
+ailili-aigc-server = { path = "../ailili-aigc-server" }
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "json", "rustls-tls"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[target.'cfg(unix)'.dependencies]
+libc = "0.2"
+
+[dev-dependencies]
+tempfile = "3"

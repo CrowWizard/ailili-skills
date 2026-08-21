@@ -1,0 +1,3 @@
+[env]
+# gpt-image-2-core pulls ssh2 with vendored-openssl; this env uses the system OpenSSL.
+OPENSSL_NO_VENDOR = "1"

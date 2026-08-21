@@ -1,0 +1,152 @@
+#![allow(unused_imports)]
+
+use super::*;
+
+#[derive(Debug)]
+pub(crate) struct Settings {
+    pub(crate) host: String,
+    pub(crate) port: u16,
+    pub(crate) static_dir: PathBuf,
+}
+
+pub(crate) fn default_static_dir() -> PathBuf {
+    if let Ok(value) = env::var("GPT_IMAGE_2_WEB_DIST")
+        && !value.trim().is_empty()
+    {
+        return PathBuf::from(value);
+    }
+    let repo_dist = PathBuf::from("apps/gpt-image-2-app/dist");
+    if repo_dist.is_dir() {
+        repo_dist
+    } else {
+        PathBuf::from("/app/public")
+    }
+}
+
+pub(crate) fn parse_settings() -> Result<Settings, String> {
+    let mut host = env::var("GPT_IMAGE_2_WEB_HOST").unwrap_or_else(|_| "127.0.0.1".to_string());
+    let mut port = env::var("GPT_IMAGE_2_WEB_PORT")
+        .ok()
+        .and_then(|value| value.parse::<u16>().ok())
+        .unwrap_or(8787);
+    let mut static_dir = default_static_dir();
+    let mut args = env::args().skip(1);
+    while let Some(arg) = args.next() {
+        match arg.as_str() {
+            "--host" => {
+                host = args
+                    .next()
+                    .ok_or_else(|| "--host requires a value".to_string())?;
+            }
+            "--port" => {
+                let value = args
+                    .next()
+                    .ok_or_else(|| "--port requires a value".to_string())?;
+                port = value
+                    .parse::<u16>()
+                    .map_err(|_| "--port must be a number".to_string())?;
+            }
+            "--static-dir" => {
+                static_dir = PathBuf::from(
+                    args.next()
+                        .ok_or_else(|| "--static-dir requires a value".to_string())?,
+                );
+            }
+            "--help" | "-h" => {
+                println!(
+                    "Usage: gpt-image-2-web [--host 127.0.0.1] [--port 8787] [--static-dir apps/gpt-image-2-app/dist]"
+                );
+                std::process::exit(0);
+            }
+            other => return Err(format!("Unknown argument: {other}")),
+        }
+    }
+    Ok(Settings {
+        host,
+        port,
+        static_dir,
+    })
+}
+
+pub(crate) fn api_router(state: JobQueueState) -> Router {
+    Router::new()
+        .route("/session", get(session_status).post(create_session))
+        .route("/config", get(get_config))
+        .route("/config-paths", get(config_paths))
+        .route("/notifications", put(update_notifications))
+        .route("/notifications/test", post(test_notifications))
+        .route(
+            "/notifications/capabilities",
+            get(notification_capabilities),
+        )
+        .route("/paths", put(update_paths))
+        .route("/proxy", put(update_proxy))
+        .route("/logging", put(update_logging))
+        .route("/logs", get(get_logs))
+        .route("/storage", put(update_storage))
+        .route("/storage/{name}/test", post(test_storage))
+        .route("/providers/default", post(set_default_provider))
+        .route(
+            "/providers/{name}",
+            put(upsert_provider).delete(delete_provider),
+        )
+        .route(
+            "/providers/{name}/credentials/{credential}",
+            get(reveal_provider_credential),
+        )
+        .route("/providers/{name}/test", post(provider_test))
+        .route("/jobs", get(history_list))
+        .route("/jobs/active", get(history_active_list))
+        .route("/jobs/{job_id}", get(history_show).delete(history_delete))
+        .route(
+            "/jobs/{job_id}/outputs/{output_index}",
+            get(job_output_response),
+        )
+        .route("/jobs/{job_id}/refs/{index}", get(job_reference_response))
+        .route("/jobs/{job_id}/cancel", post(cancel_job))
+        .route("/jobs/{job_id}/retry", post(retry_job))
+        .route("/jobs/{job_id}/recovery", get(job_recovery))
+        .route("/jobs/{job_id}/resume", post(resume_job))
+        .route("/jobs/interrupted", get(interrupted_jobs))
+        .merge(test_router())
+        .route("/queue", get(queue_status))
+        .route("/queue/concurrency", post(set_queue_concurrency))
+        .route("/files", get(file_response))
+        // Reference images ride in the JSON body as byte arrays, so a 1–2MB
+        // PNG blows past axum's 2MB default and 413s. Raise the limit only on
+        // the upload routes — a global raise would also let the unauthenticated
+        // /session login parse 64MB bodies, a needless DoS amplifier.
+        .merge(
+            Router::new()
+                .route("/images/generate", post(enqueue_generate_image))
+                .route("/images/edit", post(enqueue_edit_image))
+                .layer(axum::extract::DefaultBodyLimit::max(64 * 1024 * 1024)),
+        )
+        // Gate every /api route (except the /session login handled inside)
+        // behind the access token / loopback policy.
+        .layer(axum::middleware::from_fn_with_state(
+            state.clone(),
+            require_auth,
+        ))
+        .with_state(state)
+}
+
+#[cfg(feature = "recovery-fault-injection")]
+pub(crate) fn test_router() -> Router<JobQueueState> {
+    Router::new()
+        .route("/test/faults", post(set_test_faults))
+        .route(
+            "/test/jobs/{job_id}/provider-http-attempts",
+            get(test_provider_http_attempts),
+        )
+        .route("/test/jobs/{job_id}/attempts", get(test_job_attempts))
+        .route(
+            "/test/jobs/{job_id}/raw-response-hash",
+            get(test_raw_response_hash),
+        )
+}
+
+#[cfg(not(feature = "recovery-fault-injection"))]
+pub(crate) fn test_router() -> Router<JobQueueState> {
+    Router::new()
+}

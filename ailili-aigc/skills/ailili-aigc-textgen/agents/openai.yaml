@@ -1,0 +1,8 @@
+interface:
+  display_name: "Ailili 生文"
+  short_description: "Local text generation via Node client + /aigc/textGenAsync"
+  default_prompt: |
+    Use this skill directory as cwd. Prefer `node scripts/aigc_textgen.cjs --stdin`.
+    If the next step is image generation, use `--content-only`.
+    Do not use Python. Do not npm install.
+    Gateway is $AILILI_TOOL_GATEWAY (default http://127.0.0.1:8788).

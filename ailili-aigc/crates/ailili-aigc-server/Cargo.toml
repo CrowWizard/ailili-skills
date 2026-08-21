@@ -1,0 +1,22 @@
+[package]
+name = "ailili-aigc-server"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "LinkFox-compatible HTTP facade over the local gpt-image-2 queue."
+
+[dependencies]
+axum = "0.8"
+base64 = "0.22"
+gpt-image-2-core = { path = "../../../gpt-image-2/crates/gpt-image-2-core" }
+gpt-image-2-runtime = { path = "../../../gpt-image-2/crates/gpt-image-2-runtime" }
+mime_guess = "2.0"
+reqwest = { version = "0.12", default-features = false, features = ["blocking", "json", "rustls-tls"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1", features = ["fs", "macros", "net", "rt-multi-thread", "time"] }
+
+[dev-dependencies]
+http-body-util = "0.1"
+tempfile = "3"
+tower = { version = "0.5", features = ["util"] }

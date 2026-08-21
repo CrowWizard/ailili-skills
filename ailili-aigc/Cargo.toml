@@ -1,0 +1,17 @@
+[workspace]
+members = [
+  "crates/ailili-aigc",
+  "crates/ailili-aigc-server",
+]
+resolver = "2"
+
+[workspace.package]
+edition = "2021"
+license = "MIT"
+version = "0.1.0"
+
+[profile.dev]
+debug = 1
+
+[profile.release]
+lto = "thin"
