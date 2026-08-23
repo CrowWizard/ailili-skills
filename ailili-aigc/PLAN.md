@@ -1,6 +1,6 @@
 # ailili-aigc 实施计划
 
-把 LinkFox 四个 skill 的**网关底座**换成本地二进制；Agent 编排仍走 skill。Skill 脚本用 **Node（`.cjs`）**，对齐 `gpt-image-2/skills/gpt-image-2-skill/scripts`，不再用 Python。
+把四个 skill 的**网关底座**换成本地二进制；Agent 编排仍走 skill。Skill 脚本用 **Node（`.cjs`）**，对齐 `gpt-image-2/skills/gpt-image-2-skill/scripts`，不再用 Python。
 
 本文件是实施计划，不是 Agent 操作卡。
 
@@ -11,20 +11,20 @@
 四个 skill（生图、生文、品牌基因、商品套图）继续当 Agent 入口。换掉的是：
 
 ```
-现在：python aigc_*.py  →  POST tool-gateway.linkfox.com /aigc/imageGenAsync|textGenAsync
+现在：python aigc_*.py  →  POST 远程 /aigc/imageGenAsync|textGenAsync
 以后：node  aigc_*.cjs  →  POST 本地 ailili-aigc daemon /aigc/imageGenAsync|textGenAsync
                               └─ 内部入队 gpt-image-2 队列 / chat completions
 ```
 
 - 生图、生文模型走本地 config（OpenAI-compatible / Codex）。暂不接 `BANANA_PRO`、`GEM_3_1_PRO`。
-- `gpt-image-2` 的 HTTP daemon、任务队列、history、本地文件 URL、storage **留着**，用来模拟 LinkFox server（异步 `taskId` + 轮询 + 可下载结果）。
+- `gpt-image-2` 的 HTTP daemon、任务队列、history、本地文件 URL、storage **留着**，用来模拟异步网关（`taskId` + 轮询 + 可下载结果）。
 - 透明抠图、Tauri 桌面不是本项目主路径。
 
 非目标（本阶段不做）：
 
 - 重写套图的 Agent 确认环（`AskUserQuestion`、计划表 markdown 转发）
 - 把 Agent 改成直接调 `gpt-image-2-skill images edit --no-wait`
-- 登录/积分 onboarding（本地网关不需要 LinkFox 账号）
+- 登录/积分 onboarding（本地网关不需要云端账号）
 - 视频 URL 进 textgen
 
 ---
@@ -44,14 +44,14 @@ ailili-skills/
     Cargo.toml
     crates/
       ailili-aigc/             # CLI：daemon start|stop|status
-      ailili-aigc-server/      # LinkFox 路径兼容层 + text 任务
+      ailili-aigc-server/      # /aigc 路径 + text 任务
     scripts/lib/               # Node 共享运行时（paths / http / nl）
     skills/
       ailili-aigc-imagegen/
       ailili-aigc-textgen/
       ailili-aigc-imagegen-brand-gene-extract/
       ailili-aigc-imagegen-product/
-  linkfox-aigc-*               # 原 Python skill，只作协议对照，运行时不要再调
+  仓库根目录原 Python skill     # 只作协议对照，运行时不要再调
 ```
 
 依赖方向：`ailili-aigc-server` path-dep `../gpt-image-2/crates/gpt-image-2-*`。不要 fork 改名 gpt-image-2 整包。
@@ -76,7 +76,7 @@ Node 短客户端（本仓库 scripts/）
         │
         ▼
 ailili-aigc daemon  http://127.0.0.1:8788   （不要占用 gpt-image-2 的 8787）
-  兼容路由（LinkFox 字段）
+  兼容路由（/aigc 字段）
   映射到内部队列
         │
         ├─ 生图 → gpt-image-2 队列（Edit，imageUrls 拉成 refs）
@@ -126,12 +126,12 @@ stdout 契约先保持与原 Python 一致，减少编排 skill 改动：
 
 ### 5.1 生图 `POST /aigc/imageGenAsync`
 
-入参（skill 已有）→ 内部 Edit（LinkFox 强制 `imageUrls`）：
+入参（skill 已有）→ 内部 Edit（网关强制 `imageUrls`）：
 
-| LinkFox | 内部 |
+| 网关 | 内部 |
 |---|---|
 | `prompt` | `prompt`（先 `decode_nl`） |
-| `imageUrls[]` | 下载为 `refs: [{name, bytes}]` |
+| `imageUrls[]` | 本地路径 / `file://` / http(s) / `data:` → `refs: [{name, bytes}]` |
 | `outputNum` | `n` |
 | `quality` | `quality` |
 | `resolution` + `aspectRatio` | `size`（见下表） |
@@ -157,9 +157,9 @@ A+ 比例（1464:600 等）按宽高比映射到不超过上游上限的 `WxH`�
 
 ### 5.2 生图 `POST /aigc/taskQuery`
 
-内部 job status → LinkFox：
+内部 job status → 网关：
 
-| 内部 | LinkFox `status` |
+| 内部 | 网关 `status` |
 |---|---|
 | queued / running | `PROCESSING` |
 | completed | `SUCCESS` |
@@ -178,7 +178,7 @@ A+ 比例（1464:600 等）按宽高比映射到不超过上游上限的 `WxH`�
 ### 5.4 鉴权
 
 - loopback：无 key 也可入队
-- 若设置了 `LINKFOX_AGENT_API_KEY`，请求头 `Authorization` 对得上才放行（或与 `AILILI_AIGC_TOKEN` 同一值）
+- 若设置了 `AILILI_AIGC_TOKEN`，请求头 `Authorization` 对得上才放行
 - Node 客户端：loopback 时 key 可选；非 loopback 仍要求 key（兼容对照真实网关）
 
 ---
@@ -265,12 +265,12 @@ CLI：`ailili-aigc config inspect|add-provider`（inspect 脱敏）。以后加 
 
 ## 8. 验收
 
-1. 只设本地网关与模型 key，不设 LinkFox 账号，imagegen Node 客户端能出图并落 `linkfox/<date>/<session>/media/`。
+1. 只设本地网关与模型 key，imagegen 客户端能出图并落 `ailili/<date>/<session>/media/`。
 2. textgen `--content-only` 得到单行（含 `⏎`），exit 0。
 3. 品牌基因写出字段齐全的 JSON 到 `data/`。
 4. 商品单张 SCENE：textgen → imagegen，对话里能展示本地 png。
 5. 套图：plan 表 → 用户确认 → dispatch 入队 → summary 含 `![]()`。
-6. `gpt-image-2` 树不被改成 LinkFox 品牌；兼容代码只在 `ailili-aigc/`。
+6. `gpt-image-2` 树保持原产品名；网关代码只在 `ailili-aigc/`。
 
 ---
 
@@ -282,7 +282,7 @@ CLI：`ailili-aigc config inspect|add-provider`（inspect 脱敏）。以后加 
 | 4K 正方形超过上游像素上限 | 映射表降级并在 taskQuery `errorMsg`/日志说明 |
 | 双 daemon 抢 8787 | ailili-aigc 默认 8788，或单进程内嵌队列 |
 | Node `require` 共享 lib 在 skill 被单独安装后失效 | 阶段 5 前把 lib vendoring 进各 skill `scripts/lib/` |
-| 原 Python skill 与新 Node 并存 | 文档写明只用 `ailili-aigc/skills`；根目录 `linkfox-aigc-*` 只读对照 |
+| 原 Python skill 与新 Node 并存 | 文档写明只用 `ailili-aigc/skills`；根目录原 Python skill 只读对照 |
 
 ---
 

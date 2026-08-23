@@ -70,24 +70,24 @@ fn session_id(ts: SystemTime) -> String {
     )
 }
 
-fn linkfox_root() -> PathBuf {
+fn session_store_root() -> PathBuf {
     let mut candidates = Vec::new();
     if let Ok(acpx) = env::var("ACPX_WORKSPACES") {
         if let Some(first) = env::split_paths(&acpx).next() {
             if !first.as_os_str().is_empty() {
-                candidates.push(first.join("linkfox"));
+                candidates.push(first.join("ailili"));
             }
         }
     }
     candidates.push(
         env::current_dir()
             .unwrap_or_else(|_| PathBuf::from("."))
-            .join("linkfox"),
+            .join("ailili"),
     );
     if let Some(home) = env::var_os("HOME").or_else(|| env::var_os("USERPROFILE")) {
-        candidates.push(PathBuf::from(home).join("linkfox"));
+        candidates.push(PathBuf::from(home).join("ailili"));
     }
-    candidates.push(env::temp_dir().join("linkfox"));
+    candidates.push(env::temp_dir().join("ailili"));
     for root in &candidates {
         if fs::create_dir_all(root).is_ok() {
             let probe = root.join(".write_probe");
@@ -100,7 +100,7 @@ fn linkfox_root() -> PathBuf {
     candidates
         .last()
         .cloned()
-        .unwrap_or_else(|| PathBuf::from("linkfox"))
+        .unwrap_or_else(|| PathBuf::from("ailili"))
 }
 
 fn ensure_meta(root: &Path, session_dir: &Path, date: &str, sid: &str, ts: SystemTime) {
@@ -183,7 +183,7 @@ fn update_meta(session_dir: &Path, skill: &str, kind: &str, file_rel: &str, ts: 
 fn ensure_session(ts: SystemTime) -> PathBuf {
     let date = date_str(ts);
     let sid = session_id(ts);
-    let root = linkfox_root();
+    let root = session_store_root();
     let session_dir = root.join(&date).join(&sid);
     let _ = fs::create_dir_all(&session_dir);
     ensure_meta(&root, &session_dir, &date, &sid, ts);

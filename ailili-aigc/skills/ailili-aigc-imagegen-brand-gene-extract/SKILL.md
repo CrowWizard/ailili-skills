@@ -5,7 +5,7 @@ description: 品牌基因样式提取。根据商品图片与品牌参数提取 
 
 # 品牌基因样式提取
 
-一条 Node 命令跑完：组 prompt → 本地 textgen → 抽 JSON → 缺字段兜底 → 落盘。不要用 Python，不要拆成多次 textgen / Write。
+一条 Node 命令跑完：组 prompt → 本地 textgen → 抽 JSON → 缺字段兜底 → 落盘。不要拆成多次 textgen / Write。
 
 ```bash
 node scripts/extract_brand_gene.cjs --stdin < params.json
@@ -18,7 +18,7 @@ cwd 为本 skill 根目录。
 
 ```json
 {
-  "images": ["https://example.com/product.jpg"],
+  "images": ["C:/Users/me/product.jpg"],
   "brandKey": {
     "brandColor": "",
     "fontStyle": "",
@@ -30,7 +30,7 @@ cwd 为本 skill 根目录。
 }
 ```
 
-`images` / `imageUrls` 至少 1 个 URL。`brandKey` 可省略，缺省为英文 / 亚马逊 / 美国，主色与字体自动提取。`brandColor` / `fontStyle` 非空时写入最终 JSON 对应字段。
+`images` / `imageUrls` 至少 1 张（本地绝对路径或 URL）。`brandKey` 可省略，缺省为英文 / 亚马逊 / 美国，主色与字体自动提取。`brandColor` / `fontStyle` 非空时写入最终 JSON 对应字段。
 
 ## 输出
 
@@ -44,7 +44,7 @@ stdout：`Saved full response: <绝对路径> (<N> bytes)`
 
 ## 错误
 
-- 没有图片 URL：退出非 0，提示补图
+- 没有图片路径：退出非 0，提示补图。本地文件用绝对路径，不要转 data URL。
 - textgen 失败：退出非 0，stderr 含原因
 
 网关：`AILILI_TOOL_GATEWAY`（默认 `http://127.0.0.1:8788`）。无上游模型时用 `AILILI_AIGC_FAKE_TEXT=1`。

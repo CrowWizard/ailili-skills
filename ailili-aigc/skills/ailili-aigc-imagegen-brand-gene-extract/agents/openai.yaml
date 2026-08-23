@@ -3,6 +3,7 @@ interface:
   short_description: "Extract brandGeneJson via one Node command"
   default_prompt: |
     Use this skill directory as cwd. Call `node scripts/extract_brand_gene.cjs --stdin` with JSON
-    `{images, brandKey}`. Do not use Python. Do not split prompt assembly / textgen / save into
-    extra steps. After success, keep the Saved full response path for --brand-gene-file.
+    `{images, brandKey}`. images: local absolute paths, never data URLs.
+    Do not split prompt assembly / textgen / save into extra steps.
+    After success, keep the Saved full response path for --brand-gene-file.
     Gateway is $AILILI_TOOL_GATEWAY (default http://127.0.0.1:8788).

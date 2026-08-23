@@ -5,9 +5,9 @@ description: AI生图工具，根据提示词和参考图生成图片。本地�
 
 # AI 生图
 
-根据提示词和参考图生成图片。客户端是 **Node**，不要调用 Python。
+根据提示词和参考图生成图片。客户端是 **Node**。
 
-网关：`AILILI_TOOL_GATEWAY`（默认 `http://127.0.0.1:8788`）。协议与 LinkFox 相同：`POST /aigc/imageGenAsync` → `taskId` → `POST /aigc/taskQuery`。loopback 且 daemon 未起时，Node 客户端会尝试 `ailili-aigc daemon start`。
+网关：`AILILI_TOOL_GATEWAY`（默认 `http://127.0.0.1:8788`）。协议：`POST /aigc/imageGenAsync` → `taskId` → `POST /aigc/taskQuery`。loopback 且 daemon 未起时，Node 客户端会尝试 `ailili-aigc daemon start`。
 
 ## 调用
 
@@ -19,7 +19,19 @@ ailili-aigc imagegen '<JSON>'
 node scripts/aigc_imagegen.cjs '<JSON>'
 ```
 
-cwd 为本 skill 根目录。JSON 必填：`prompt`、`imageUrls`（至少 1 个 URL）、`outputNum`、`resolution`、`aspectRatio`、`quality`。`provider` 可传，本地网关会忽略，改用 `$AILILI_AIGC_HOME/config.json` 的 `default_image_provider`（或 `default_provider`）。
+cwd 为本 skill 根目录。JSON 必填：`prompt`、`imageUrls`、`outputNum`、`resolution`、`aspectRatio`、`quality`。`provider` 可传，本地网关会忽略，改用 `$AILILI_AIGC_HOME/config.json` 的 `default_image_provider`（或 `default_provider`）。
+
+## 参考图（强制）
+
+`imageUrls` 至少 1 张。用户给的是本地文件时，**原样传绝对路径**，例如 `C:/Users/me/product.jpg`。
+
+禁止：
+
+- 把图片 Read 成 base64 / 转 `data:` URL（Windows 命令行会 `ENAMETOOLONG`）
+- 为参考图起临时 HTTP、或先上传到图床
+- `file://` 以外的相对路径（能解析才用；优先绝对路径）
+
+仍可用短 `http(s)` URL。网关在本机读文件，不经过 LinkFox 上传。
 
 **异步流程**（脚本内完成）：
 
@@ -27,7 +39,7 @@ cwd 为本 skill 根目录。JSON 必填：`prompt`、`imageUrls`（至少 1 个
 2. 轮询 `POST /aigc/taskQuery`（10s 递减到 5s，最长 10 分钟）
 3. 成功则下载图片到会话 `media/`
 
-**文件位置**：`<cwd>/linkfox/<YYYY-MM-DD>/<session>/`
+**文件位置**：`<cwd>/ailili/<YYYY-MM-DD>/<session>/`
 
 | 内容 | 目录 |
 |------|------|
@@ -41,17 +53,17 @@ cwd 为本 skill 根目录。JSON 必填：`prompt`、`imageUrls`（至少 1 个
 
 禁止 Read 图片文件内容。把路径给用户即可。
 
-loopback 网关可不配 API key。非 loopback 需要 `LINKFOX_AGENT_API_KEY`。
+loopback 网关可不配 API key。非 loopback 需要 `AILILI_AIGC_TOKEN`。
 
 ## 示例
 
 ```json
-{"imageUrls": ["https://example.com/product.jpg"], "prompt": "product photography on white background, studio lighting", "outputNum": 1, "resolution": "1K", "aspectRatio": "1:1", "quality": "high"}
+{"imageUrls": ["C:/Users/me/product.jpg"], "prompt": "product photography on white background, studio lighting", "outputNum": 1, "resolution": "1K", "aspectRatio": "1:1", "quality": "high"}
 ```
 
 ## 限制
 
-- 至少一张参考图 URL。
+- 至少一张参考图（本地路径或 URL）。
 - 单次最多 10 张。
 - 失败不重试（脚本只跑一轮）。
 

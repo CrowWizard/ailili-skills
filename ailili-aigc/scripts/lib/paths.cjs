@@ -52,7 +52,7 @@ function sessionId(date) {
   return sessionCache._auto;
 }
 
-function linkfoxRoot() {
+function sessionStoreRoot() {
   if (sessionCache._root) {
     return sessionCache._root;
   }
@@ -61,12 +61,12 @@ function linkfoxRoot() {
   if (acpx) {
     const first = acpx.split(path.delimiter)[0].trim();
     if (first) {
-      candidates.push(path.join(first, "linkfox"));
+      candidates.push(path.join(first, "ailili"));
     }
   }
-  candidates.push(path.join(process.cwd(), "linkfox"));
-  candidates.push(path.join(os.homedir(), "linkfox"));
-  candidates.push(path.join(os.tmpdir(), "linkfox"));
+  candidates.push(path.join(process.cwd(), "ailili"));
+  candidates.push(path.join(os.homedir(), "ailili"));
+  candidates.push(path.join(os.tmpdir(), "ailili"));
   for (const root of candidates) {
     try {
       fs.mkdirSync(root, { recursive: true });
@@ -145,7 +145,7 @@ function ensureSession(date) {
     String(date.getDate()).padStart(2, "0"),
   ].join("-");
   const sid = sessionId(date);
-  const root = linkfoxRoot();
+  const root = sessionStoreRoot();
   const sessionDir = path.join(root, dateStr, sid);
   fs.mkdirSync(sessionDir, { recursive: true });
   ensureMeta(root, sessionDir, dateStr, sid, date);
@@ -200,7 +200,7 @@ function downloadOnce(url, destPath, timeoutMs) {
       url,
       {
         timeout: timeoutMs,
-        headers: { "User-Agent": "LinkFox-Skill/2.0" },
+        headers: { "User-Agent": "Ailili-AIGC/0.1" },
       },
       (res) => {
         if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {

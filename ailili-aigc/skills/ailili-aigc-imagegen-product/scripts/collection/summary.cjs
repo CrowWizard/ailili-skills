@@ -98,7 +98,7 @@ function writeManifest(state, results) {
   }
   const out = path.join(path.resolve(state.datadir), "collection-asset-manifest.json");
   const payload = {
-    schema: "linkfox-listing-asset-manifest/v1",
+    schema: "ailili-listing-asset-manifest/v1",
     source: {
       kind: "ailili-aigc-imagegen-product",
       datadir: state.datadir,

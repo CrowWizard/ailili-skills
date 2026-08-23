@@ -5,7 +5,7 @@ description: AI生文工具，根据提示词生成文本，支持图文结合�
 
 # AI 生文
 
-客户端是 **Node**，不要调用 Python。
+客户端是 **Node**。
 
 ```bash
 ailili-aigc textgen --stdin < params.json
@@ -19,7 +19,7 @@ node scripts/aigc_textgen.cjs --stdin [--content-only] < params.json
 
 ## 参数
 
-- 必填：`prompt`、`imageUrls`（无图传 `[]`）、`thinkingLevel`（本地网关可忽略，建议 `minimal`）
+- 必填：`prompt`、`imageUrls`（无图传 `[]`；有图传本地绝对路径或短 http(s)，不要 `data:` URL）、`thinkingLevel`（本地网关可忽略，建议 `minimal`）
 - `model` 可传；本地阶段忽略，用 `default_text_provider`
 
 ## 输出契约
@@ -36,7 +36,7 @@ node scripts/aigc_textgen.cjs --stdin [--content-only] < params.json
 PROMPT=$(node scripts/aigc_textgen.cjs --stdin --content-only < textgen_params.json)
 ```
 
-loopback 可不配 API key。非 loopback 需要 `LINKFOX_AGENT_API_KEY`。
+loopback 可不配 API key。非 loopback 需要 `AILILI_AIGC_TOKEN`。
 
 ## 示例
 
@@ -45,5 +45,5 @@ loopback 可不配 API key。非 loopback 需要 `LINKFOX_AGENT_API_KEY`。
 ```
 
 ```json
-{"prompt": "分析这张商品主图的构图和卖点表达", "imageUrls": ["https://example.com/product-main.jpg"], "thinkingLevel": "high"}
+{"prompt": "分析这张商品主图的构图和卖点表达", "imageUrls": ["C:/Users/me/product.jpg"], "thinkingLevel": "high"}
 ```

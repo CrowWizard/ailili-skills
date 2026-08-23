@@ -12,9 +12,18 @@ pub fn complete(request: &TextRequest) -> Result<Value, String> {
     if let Some(url) = request.image_urls.iter().find(|url| is_video_url(url)) {
         return Err(format!("video URLs are not supported yet: {url}"));
     }
+    let image_urls = request
+        .image_urls
+        .iter()
+        .map(|url| crate::download::to_chat_image_url(url))
+        .collect::<Result<Vec<_>, _>>()?;
+    let request = TextRequest {
+        prompt: request.prompt.clone(),
+        image_urls,
+    };
     let provider = config::resolve_text_provider()?;
     let url = chat_completions_url(&provider.api_base);
-    let body = chat_body(&provider.model, request);
+    let body = chat_body(&provider.model, &request);
     let client = reqwest::blocking::Client::builder()
         .timeout(std::time::Duration::from_secs(150))
         .build()

@@ -14,7 +14,7 @@ const POLL_INTERVAL_STEP = 1;
 const MAX_POLL_TIME = 600;
 
 function getApiKey() {
-  return process.env.LINKFOX_AGENT_API_KEY || process.env.LINKFOXAGENT_API_KEY || "";
+  return process.env.AILILI_AIGC_TOKEN || process.env.AILILI_AGENT_API_KEY || "";
 }
 
 function requireApiKey() {
@@ -126,7 +126,7 @@ function postJson(url, params, timeoutMs = 150000) {
   const headers = {
     Authorization: apiKey,
     "Content-Type": "application/json",
-    "User-Agent": "LinkFox-Skill/2.0",
+    "User-Agent": "Ailili-AIGC/0.1",
     SESSION_ID: process.env.SESSION_ID || "",
     MODE_ID: process.env.MODE_ID || "",
     APP_NAME: process.env.APP_NAME || "",

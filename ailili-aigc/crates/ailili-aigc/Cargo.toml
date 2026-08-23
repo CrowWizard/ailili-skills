@@ -3,7 +3,7 @@ name = "ailili-aigc"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "Local LinkFox-compatible AIGC CLI (daemon + jobs)."
+description = "Local AIGC CLI (daemon + jobs)."
 
 [dependencies]
 ailili-aigc-server = { path = "../ailili-aigc-server" }

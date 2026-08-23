@@ -11,11 +11,22 @@ const { buildParams: buildImagegenPrompt } = require("./imagegen-prompt.cjs");
 const TEXTGEN_TIMEOUT = 360000;
 const IMAGEGEN_TIMEOUT = 720000;
 
-function isHttpish(url) {
-  return (
-    typeof url === "string" &&
-    (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:"))
-  );
+function isUsableImageRef(url) {
+  if (typeof url !== "string") return false;
+  const value = url.trim();
+  if (!value) return false;
+  if (
+    value.startsWith("http://") ||
+    value.startsWith("https://") ||
+    value.startsWith("data:") ||
+    value.startsWith("file:")
+  ) {
+    return true;
+  }
+  if (/^[A-Za-z]:[\\/]/.test(value) || value.startsWith("\\\\") || value.startsWith("/")) {
+    return true;
+  }
+  return fs.existsSync(value);
 }
 
 function runNodeJson(script, args, { input, timeout } = {}) {
@@ -104,8 +115,8 @@ function processTask(spec, skillRoot) {
     if (!Array.isArray(imageUrls) || !imageUrls.length) {
       throw new Error("image_urls 为空");
     }
-    if (!imageUrls.every(isHttpish)) {
-      throw new Error("image_urls 须为 http(s) 或 data: URL");
+    if (!imageUrls.every(isUsableImageRef)) {
+      throw new Error("image_urls 须为本地路径或 http(s)/data URL");
     }
     const textgenScript = spec.textgen_script;
     const imagegenScript = spec.imagegen_script;

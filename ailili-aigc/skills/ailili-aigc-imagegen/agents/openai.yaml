@@ -3,7 +3,8 @@ interface:
   short_description: "Local image generation via Node client + /aigc/imageGenAsync"
   default_prompt: |
     Use this skill directory as cwd. Call `node scripts/aigc_imagegen.cjs '<JSON>'`.
-    Do not use Python. Do not call gpt-image-2-skill images generate/edit.
+    imageUrls: pass local absolute paths as-is (e.g. C:/Users/me/a.jpg).
+    Do not convert images to data URLs (Windows ENAMETOOLONG). Do not Read image bytes.
     Do not Start-Process / nohup. The Node script already polls the gateway.
     Gateway is $AILILI_TOOL_GATEWAY (default http://127.0.0.1:8788).
-    After success, show local image paths with markdown images; do not Read image bytes.
+    After success, show local image paths with markdown images.

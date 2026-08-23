@@ -30,9 +30,9 @@ fn url_host(base: &str) -> Option<String> {
 }
 
 fn api_key() -> Result<String, String> {
-    let key = std::env::var("LINKFOX_AGENT_API_KEY")
+    let key = std::env::var("AILILI_AIGC_TOKEN")
         .ok()
-        .or_else(|| std::env::var("LINKFOXAGENT_API_KEY").ok())
+        .or_else(|| std::env::var("AILILI_AGENT_API_KEY").ok())
         .unwrap_or_default();
     if !key.is_empty() {
         return Ok(key);

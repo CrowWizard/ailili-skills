@@ -1,4 +1,4 @@
-//! Map LinkFox `resolution` + `aspectRatio` onto gpt-image-2 `--size`.
+//! Map gateway `resolution` + `aspectRatio` onto gpt-image-2 `--size`.
 
 const MAX_EDGE: u32 = 3840;
 const MIN_PIXELS: u32 = 655_360;
@@ -90,7 +90,7 @@ mod tests {
     use super::map_image_size;
 
     #[test]
-    fn maps_standard_linkfox_sizes() {
+    fn maps_standard_gateway_sizes() {
         assert_eq!(map_image_size("1K", "1:1").unwrap(), "1024x1024");
         assert_eq!(map_image_size("2K", "1:1").unwrap(), "2048x2048");
         assert_eq!(map_image_size("2K", "16:9").unwrap(), "2048x1152");

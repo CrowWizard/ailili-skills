@@ -26,20 +26,20 @@
 ## 步骤 2：取静态模板作为最终 prompt
 
 - **输入**：无（不依赖任何运行时业务字段）
-- **操作**：**必须用 `scripts/build_imagegen_prompt.py --type WHITE_BG` 构建 imagegen 参数文件**，脚本会从下方「提示词正文」的 ```text``` 代码块**动态提取**正文作为最终 prompt：
+- **操作**：**必须用 `scripts/build_imagegen_prompt.cjs --type WHITE_BG` 构建 imagegen 参数文件**，脚本会从下方「提示词正文」的 ```text``` 代码块**动态提取**正文作为最终 prompt：
   ```bash
-  DATADIR=$(python <brand-gene根目录>/scripts/save_brand_gene.py --datadir)
-  python <本skill根目录>/scripts/build_imagegen_prompt.py \
+  DATADIR=$(node <brand-gene根目录>/scripts/save_brand_gene.cjs --datadir)
+  node <本skill根目录>/scripts/build_imagegen_prompt.cjs \
     --type WHITE_BG \
     --image-urls '<步骤1的URL JSON数组>' \
     --out "$DATADIR/imagegen_white.json"
   ```
-  本步骤只取正文直出：**不**做占位符替换 / textgen 改写 / 敏感词改写（正文已是完整的纯白底精修英文指令，无变量可填）。正文一律由脚本读取，**不要手动复制或经 shell 变量传递**（正文较长，易截断或转义出错）。套图场景下本类型由单任务驱动器 `scripts/run_one_task.py`（`type=WHITE_BG`）自动走同一提取逻辑。
+  本步骤只取正文直出：**不**做占位符替换 / textgen 改写 / 敏感词改写（正文已是完整的纯白底精修英文指令，无变量可填）。正文一律由脚本读取，**不要手动复制或经 shell 变量传递**（正文较长，易截断或转义出错）。套图场景下本类型由单任务驱动器 `scripts/run_one_task.cjs`（`type=WHITE_BG`）自动走同一提取逻辑。
 - **输出**：`prompt`（送给步骤 3 的最终英文指令）
 
 ## 提示词正文（DictKey `agentProductWhiteBg`）
 
-> `scripts/build_imagegen_prompt.py --type WHITE_BG` 会用正则**从下方 ```text``` 代码块动态提取**该正文作为最终 prompt，因此本代码块**即运行时数据源**——运营更新直接改此处正文即自动生效，**不要改动 ```text``` 围栏标记**（脚本依赖它定位正文）。`entry_name=agentProductWhiteBg` 仅为来源标注（原后端 `ai_dict_def` 同名记录），便于运营对照同步。
+> `scripts/build_imagegen_prompt.cjs --type WHITE_BG` 会用正则**从下方 ```text``` 代码块动态提取**该正文作为最终 prompt，因此本代码块**即运行时数据源**——运营更新直接改此处正文即自动生效，**不要改动 ```text``` 围栏标记**（脚本依赖它定位正文）。`entry_name=agentProductWhiteBg` 仅为来源标注（原后端 `ai_dict_def` 同名记录），便于运营对照同步。
 
 ```text
 ##Product Refinement White Background Image AI Visual Designer Instructions
@@ -72,7 +72,7 @@ Refinement strategy:
 
 ## 执行自检
 
-- [ ] 步骤 1 所有参考图都为公开可访问 URL（本地路径已通过 linkfox-file-upload 上传），否则报错而非带空图调 imagegen
+- [ ] 步骤 1 参考图为本地绝对路径或 http(s) URL（不要转 data URL），否则报错而非带空图调 imagegen
 - [ ] 背景为无缝纯白 RGB(255,255,255)，无原图杂背景 / 渐变 / 阴影色块残留
 - [ ] 产品的拍摄角度、形态、颜色、材质与原图保持一致，未增删任何产品元素
 - [ ] 主体居中且占比约 85%~90%，未因放大产生畸变

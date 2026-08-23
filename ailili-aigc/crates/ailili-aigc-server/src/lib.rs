@@ -106,7 +106,7 @@ impl<R: JobRunner> QueueRuntimeHooks for AppState<R> {
         match queued.task {
             QueuedTask::Edit(request) => self.runner.run_edit(request, queued.id, queued.dir),
             QueuedTask::Generate(_) => Err(json!({
-                "message": "text-to-image generate is not used for LinkFox imageGenAsync"
+                "message": "text-to-image generate is not used for imageGenAsync"
             })),
         }
     }
@@ -288,7 +288,7 @@ async fn task_query(headers: HeaderMap, Json(body): Json<TaskQueryBody>) -> impl
     }
     match show_history_job(task_id) {
         Ok(job) => {
-            let status = status::linkfox_status(job.get("status").and_then(Value::as_str));
+            let status = status::task_status(job.get("status").and_then(Value::as_str));
             let mut result_list = Value::Null;
             let mut error_msg = Value::Null;
             if status == "SUCCESS" {
@@ -469,7 +469,7 @@ async fn text_task_query(Json(body): Json<TaskQueryBody>) -> impl IntoResponse {
     }
     match show_history_job(task_id) {
         Ok(job) => {
-            let status = status::linkfox_status(job.get("status").and_then(Value::as_str));
+            let status = status::task_status(job.get("status").and_then(Value::as_str));
             let metadata = job.get("metadata").cloned().unwrap_or(Value::Null);
             let content = metadata
                 .get("content")
@@ -710,6 +710,46 @@ mod tests {
         assert_eq!(file.status(), StatusCode::OK);
         let bytes = file.into_body().collect().await.unwrap().to_bytes();
         assert_eq!(&bytes[..8], &TINY_PNG[..8]);
+    }
+
+    #[tokio::test]
+    async fn imagegen_async_accepts_local_file() {
+        let _guard = ENV_LOCK.lock().unwrap();
+        let tmp = tempfile::tempdir().unwrap();
+        std::env::set_var("CODEX_HOME", tmp.path());
+        std::env::set_var("AILILI_AIGC_HOME", tmp.path().join("ailili"));
+        let image = tmp.path().join("ref.png");
+        std::fs::write(&image, TINY_PNG).unwrap();
+
+        let app = router(AppState::new(FakeRunner));
+        let create = app
+            .clone()
+            .oneshot(
+                Request::builder()
+                    .method("POST")
+                    .uri("/aigc/imageGenAsync")
+                    .header("content-type", "application/json")
+                    .body(Body::from(
+                        json!({
+                            "prompt": "product on white background",
+                            "imageUrls": [image.display().to_string()],
+                            "outputNum": 1,
+                            "resolution": "1K",
+                            "aspectRatio": "1:1",
+                            "quality": "high"
+                        })
+                        .to_string(),
+                    ))
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(create.status(), StatusCode::OK);
+        let created = body_json(create).await;
+        assert!(
+            created.get("taskId").and_then(Value::as_str).is_some(),
+            "{created}"
+        );
     }
 
     #[tokio::test]

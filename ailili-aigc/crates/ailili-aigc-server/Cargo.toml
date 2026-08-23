@@ -3,7 +3,7 @@ name = "ailili-aigc-server"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "LinkFox-compatible HTTP facade over the local gpt-image-2 queue."
+description = "Local AIGC HTTP facade over the gpt-image-2 queue."
 
 [dependencies]
 axum = "0.8"
