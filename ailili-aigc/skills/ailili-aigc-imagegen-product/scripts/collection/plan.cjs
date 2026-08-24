@@ -33,13 +33,8 @@ function resolveScripts(skillRoot) {
 function isUsableUrl(url) {
   if (typeof url !== "string") return false;
   const value = url.trim();
-  if (!value) return false;
-  if (
-    value.startsWith("http://") ||
-    value.startsWith("https://") ||
-    value.startsWith("data:") ||
-    value.startsWith("file:")
-  ) {
+  if (!value || value.startsWith("data:")) return false;
+  if (value.startsWith("http://") || value.startsWith("https://") || value.startsWith("file:")) {
     return true;
   }
   if (/^[A-Za-z]:[\\/]/.test(value) || value.startsWith("\\\\") || value.startsWith("/")) {
@@ -113,7 +108,7 @@ function runPlanPhase(job, skillRoot) {
   trace("plan:start", { scene: String(job.scene || "D").toUpperCase(), refs: (job.imageUrls || job.images || []).length, trace_file: traceFile });
   const imageUrls = job.imageUrls || job.images || [];
   if (!imageUrls.length || !imageUrls.every(isUsableUrl)) {
-    throw new Error("job.imageUrls 须为非空本地路径或 http(s)/data URL 数组");
+    throw new Error("job.imageUrls 须为非空本地路径或 http(s) 数组，禁止 data URL");
   }
   const scene = String(job.scene || "D").toUpperCase();
   const brandKey = normalizeBrandKey(job.brandKey);

@@ -25,8 +25,9 @@ pub fn fetch_refs(urls: &[String]) -> Result<Vec<UploadFile>, String> {
     Ok(refs)
 }
 
-/// Turn a local path / file URL into a data URL so remote chat APIs can see it.
-/// http(s) and data: are passed through.
+/// Encode a local path / file URL as data: for the upstream chat POST body.
+/// Call this only at upload time — never put data: on CLI argv.
+/// http(s) and data: pass through.
 pub fn to_chat_image_url(source: &str) -> Result<String, String> {
     let source = source.trim();
     if source.starts_with("http://")

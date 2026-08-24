@@ -15,13 +15,8 @@ const IMAGEGEN_TIMEOUT = 720000;
 function isUsableImageRef(url) {
   if (typeof url !== "string") return false;
   const value = url.trim();
-  if (!value) return false;
-  if (
-    value.startsWith("http://") ||
-    value.startsWith("https://") ||
-    value.startsWith("data:") ||
-    value.startsWith("file:")
-  ) {
+  if (!value || value.startsWith("data:")) return false;
+  if (value.startsWith("http://") || value.startsWith("https://") || value.startsWith("file:")) {
     return true;
   }
   if (/^[A-Za-z]:[\\/]/.test(value) || value.startsWith("\\\\") || value.startsWith("/")) {
@@ -138,7 +133,7 @@ function processTask(spec, skillRoot) {
       throw new Error("image_urls 为空");
     }
     if (!imageUrls.every(isUsableImageRef)) {
-      throw new Error("image_urls 须为本地路径或 http(s)/data URL");
+      throw new Error("image_urls 须为本地路径或 http(s)，禁止 data URL");
     }
     const provider = spec.provider || "BANANA_PRO";
     const resolution = spec.resolution || "2K";
