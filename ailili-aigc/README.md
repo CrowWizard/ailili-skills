@@ -24,6 +24,8 @@ node skills/ailili-aigc-imagegen-brand-gene-extract/scripts/extract_brand_gene.c
 JSON
 ```
 
+Outbound HTTP (text provider, reference download, gateway POST) retries transient failures up to 3 times (1s / 2s / 4s). Override with `AILILI_AIGC_RETRY_COUNT` / `AILILI_AIGC_RETRY_DELAY_SECS`. Image jobs also use gpt-image-2's provider retry.
+
 One config: `$AILILI_AIGC_HOME/config.json` (else `$CODEX_HOME/ailili-aigc/config.json`, else `~/.ailili-aigc/config.json`). Copy [config.example.json](config.example.json).
 
 - Image: `default_image_provider` (alias `default_provider`)

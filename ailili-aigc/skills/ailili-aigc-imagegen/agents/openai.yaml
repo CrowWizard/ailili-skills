@@ -7,4 +7,5 @@ interface:
     Do not convert images to data URLs (Windows ENAMETOOLONG). Do not Read image bytes.
     Do not Start-Process / nohup. The Node script already polls the gateway.
     Gateway is $AILILI_TOOL_GATEWAY (default http://127.0.0.1:8788).
-    After success, show local image paths with markdown images.
+    After success, immediately show markdown images with absolute paths.
+    Do not wait to batch-display. Do not only paste the Saved full response line.

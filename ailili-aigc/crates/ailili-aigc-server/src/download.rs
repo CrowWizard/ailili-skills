@@ -61,21 +61,23 @@ fn download_http(url: &str) -> Result<Vec<u8>, String> {
         .no_proxy()
         .build()
         .map_err(|error| error.to_string())?;
-    let response = client
-        .get(url)
-        .header("User-Agent", "Ailili-AIGC/0.1")
-        .send()
-        .map_err(|error| format!("failed to download {url}: {error}"))?;
-    if !response.status().is_success() {
-        return Err(format!(
-            "failed to download {url}: HTTP {}",
-            response.status()
-        ));
-    }
-    Ok(response
-        .bytes()
-        .map_err(|error| format!("failed to read {url}: {error}"))?
-        .to_vec())
+    crate::retry::retry("download_ref", || {
+        let response = client
+            .get(url)
+            .header("User-Agent", "Ailili-AIGC/0.1")
+            .send()
+            .map_err(|error| format!("failed to download {url}: {error}"))?;
+        if !response.status().is_success() {
+            return Err(format!(
+                "failed to download {url}: HTTP {}",
+                response.status()
+            ));
+        }
+        Ok(response
+            .bytes()
+            .map_err(|error| format!("failed to read {url}: {error}"))?
+            .to_vec())
+    })
 }
 
 fn local_path(source: &str) -> Result<PathBuf, String> {

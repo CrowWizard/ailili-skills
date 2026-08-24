@@ -28,24 +28,27 @@ pub fn complete(request: &TextRequest) -> Result<Value, String> {
         .timeout(std::time::Duration::from_secs(150))
         .build()
         .map_err(|error| error.to_string())?;
-    let response = client
-        .post(&url)
-        .header("Authorization", format!("Bearer {}", provider.api_key))
-        .header("Content-Type", "application/json")
-        .json(&body)
-        .send()
-        .map_err(|error| format!("text provider request failed: {error}"))?;
-    let status = response.status();
-    let payload: Value = response
-        .json()
-        .map_err(|error| format!("text provider returned non-JSON: {error}"))?;
-    if !status.is_success() {
-        let message = payload
-            .pointer("/error/message")
-            .and_then(Value::as_str)
-            .unwrap_or_else(|| status.as_str());
-        return Err(format!("text provider HTTP {status}: {message}"));
-    }
+    let payload = crate::retry::retry("textgen", || {
+        let response = client
+            .post(&url)
+            .header("Authorization", format!("Bearer {}", provider.api_key))
+            .header("Content-Type", "application/json")
+            .json(&body)
+            .send()
+            .map_err(|error| format!("text provider request failed: {error}"))?;
+        let status = response.status();
+        let payload: Value = response
+            .json()
+            .map_err(|error| format!("text provider returned non-JSON: {error}"))?;
+        if !status.is_success() {
+            let message = payload
+                .pointer("/error/message")
+                .and_then(Value::as_str)
+                .unwrap_or_else(|| status.as_str());
+            return Err(format!("text provider HTTP {status}: {message}"));
+        }
+        Ok(payload)
+    })?;
     let content = payload
         .pointer("/choices/0/message/content")
         .and_then(Value::as_str)

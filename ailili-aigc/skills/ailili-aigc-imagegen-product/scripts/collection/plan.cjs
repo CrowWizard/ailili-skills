@@ -95,6 +95,7 @@ function extractBrandGeneFile(job, scripts, imageUrls, brandKey) {
       encoding: "utf8",
       timeout: 360000,
       env: process.env,
+      windowsHide: process.platform === "win32",
     }
   );
   if (child.status !== 0) {

@@ -109,6 +109,7 @@ async function ensureGateway() {
   const started = childProcess.spawnSync(bin, ["daemon", "start"], {
     encoding: "utf8",
     timeout: 25000,
+    windowsHide: process.platform === "win32",
   });
   if (started.status !== 0) {
     throw new Error(

@@ -59,6 +59,7 @@ function runTextgen(script, params) {
     encoding: "utf8",
     timeout: TEXTGEN_TIMEOUT_MS,
     env: process.env,
+    windowsHide: process.platform === "win32",
   });
   if (result.error) {
     throw result.error;

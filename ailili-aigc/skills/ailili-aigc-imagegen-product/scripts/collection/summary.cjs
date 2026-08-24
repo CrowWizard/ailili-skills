@@ -49,6 +49,9 @@ function collectionStatus(state) {
       label: specs[i] && specs[i].label,
       status: row.status,
       images: row.images || [],
+      point: row.point || (specs[i] && specs[i].point) || "",
+      desc: row.desc || (specs[i] && specs[i].desc) || "",
+      image_desc: row.image_desc || (specs[i] && specs[i].image_desc) || "",
       error: row.error || null,
     })),
   };
@@ -67,9 +70,11 @@ function formatCompletion(results, specs) {
     const spec = specs[i] || {};
     const label = spec.label || VARIANT.type_labels[spec.type] || spec.type || "图片";
     if (result.status === "success" || result.status === "dry-run") {
+      lines.push(`- **第 ${i + 1} 张 · ${label}**`);
+      const point = (spec.point || result.point || "").trim();
       const desc = (spec.desc || result.desc || "").trim();
-      const tail = desc ? `　简述：${desc}` : "";
-      lines.push(`- **第 ${i + 1} 张 · ${label}**${tail}`);
+      if (point) lines.push(`  卖点：${point}`);
+      if (desc && desc !== point) lines.push(`  简述：${desc}`);
       const img = (result.images || []).find((item) => typeof item === "string" && item);
       if (img) lines.push(`  ![${label}](${img})`);
     }

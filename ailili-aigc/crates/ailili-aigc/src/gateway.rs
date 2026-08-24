@@ -83,31 +83,36 @@ pub fn post_json(path: &str, body: &Value, timeout_secs: u64) -> Result<Value, S
         .no_proxy()
         .build()
         .map_err(|error| error.to_string())?;
-    let mut request = client
-        .post(&url)
-        .header("Content-Type", "application/json")
-        .header("User-Agent", "Ailili-AIGC/0.1")
-        .header(
-            "SESSION_ID",
-            std::env::var("SESSION_ID").unwrap_or_default(),
-        )
-        .json(body);
-    if !key.is_empty() {
-        request = request.header("Authorization", key);
-    }
-    let response = request
-        .send()
-        .map_err(|error| format!("Connection failed: {error}"))?;
-    let status = response.status();
-    let payload: Value = response.json().unwrap_or_else(|_| json!({}));
-    if !status.is_success()
-        && payload.get("error").is_none()
-        && payload.get("errcode").is_none()
-        && payload.get("errorCode").is_none()
-    {
-        return Ok(json!({"error": format!("HTTP {status}")}));
-    }
-    Ok(payload)
+    ailili_aigc_server::retry(path, || {
+        let mut request = client
+            .post(&url)
+            .header("Content-Type", "application/json")
+            .header("User-Agent", "Ailili-AIGC/0.1")
+            .header(
+                "SESSION_ID",
+                std::env::var("SESSION_ID").unwrap_or_default(),
+            )
+            .json(body);
+        if !key.is_empty() {
+            request = request.header("Authorization", &key);
+        }
+        let response = request
+            .send()
+            .map_err(|error| format!("Connection failed: {error}"))?;
+        let status = response.status();
+        let payload: Value = response.json().unwrap_or_else(|_| json!({}));
+        if status.as_u16() == 429 || status.is_server_error() {
+            return Err(format!("HTTP {status}"));
+        }
+        if !status.is_success()
+            && payload.get("error").is_none()
+            && payload.get("errcode").is_none()
+            && payload.get("errorCode").is_none()
+        {
+            return Ok(json!({"error": format!("HTTP {status}")}));
+        }
+        Ok(payload)
+    })
 }
 
 pub fn poll_until_done(path: &str, task_id: &str, member_id: &str, timeout_secs: u64) -> Value {

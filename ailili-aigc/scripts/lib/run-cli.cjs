@@ -51,6 +51,7 @@ function runCli(forwardArgv) {
   const result = childProcess.spawnSync(bin, forwardArgv, {
     stdio: "inherit",
     env: process.env,
+    windowsHide: process.platform === "win32",
   });
   if (result.error) {
     process.stderr.write(`${result.error.message}\n`);

@@ -38,6 +38,7 @@ function dispatch(stateFile) {
         detached: true,
         stdio: ["ignore", log, log],
         env: process.env,
+        windowsHide: process.platform === "win32",
       }
     );
     child.unref();

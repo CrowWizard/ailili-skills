@@ -1,6 +1,7 @@
 mod config;
 mod download;
 mod fake;
+mod retry;
 mod size;
 mod status;
 mod text;
@@ -41,6 +42,7 @@ pub const COMPAT_ROUTES: &[&str] = &[
 ];
 
 pub use config::{bind_runtime_paths, config_path, data_home};
+pub use retry::{is_transient, retry};
 
 pub trait JobRunner: Clone + Send + Sync + 'static {
     fn run_edit(&self, request: EditRequest, job_id: String, dir: PathBuf) -> Result<Value, Value>;

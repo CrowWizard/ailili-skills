@@ -224,25 +224,32 @@ pub fn download_media(url: &str, slug: &str) -> Option<PathBuf> {
         .no_proxy()
         .build()
         .ok()?;
-    let response = client
-        .get(url)
-        .header("User-Agent", "Ailili-AIGC/0.1")
-        .send()
-        .ok()?;
-    if !response.status().is_success() {
-        eprintln!(
-            "[download_media] Failed to download {url}: HTTP {}",
-            response.status()
-        );
-        return None;
-    }
-    let content_type = response
-        .headers()
-        .get(reqwest::header::CONTENT_TYPE)
-        .and_then(|v| v.to_str().ok())
-        .unwrap_or("")
-        .to_string();
-    let bytes = response.bytes().ok()?;
+    let (content_type, bytes) = match ailili_aigc_server::retry("download_media", || {
+        let response = client
+            .get(url)
+            .header("User-Agent", "Ailili-AIGC/0.1")
+            .send()
+            .map_err(|error| format!("download {url}: {error}"))?;
+        if !response.status().is_success() {
+            return Err(format!("download {url}: HTTP {}", response.status()));
+        }
+        let content_type = response
+            .headers()
+            .get(reqwest::header::CONTENT_TYPE)
+            .and_then(|v| v.to_str().ok())
+            .unwrap_or("")
+            .to_string();
+        let bytes = response
+            .bytes()
+            .map_err(|error| format!("download {url}: {error}"))?;
+        Ok((content_type, bytes))
+    }) {
+        Ok(value) => value,
+        Err(error) => {
+            eprintln!("[download_media] {error}");
+            return None;
+        }
+    };
     let ext = guess_ext(url, &content_type);
     let out = media_dir.join(format!("{slug}-{}.{ext}", micros(ts)));
     if fs::write(&out, &bytes).is_err() {

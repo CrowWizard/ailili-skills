@@ -51,7 +51,11 @@ cwd 为本 skill 根目录。JSON 必填：`prompt`、`imageUrls`、`outputNum`�
 - 成功：`Saved full response: ["/abs/path.png"]`（多张为数组）
 - 失败：`Saved full response: /abs/path/data/….json`
 
-禁止 Read 图片文件内容。把路径给用户即可。
+禁止 Read 图片文件内容。成功后**立刻**用 markdown 展示，不要只丢路径：
+
+```markdown
+![生成图](/abs/path.png)
+```
 
 loopback 网关可不配 API key。非 loopback 需要 `AILILI_AIGC_TOKEN`。
 
@@ -65,7 +69,7 @@ loopback 网关可不配 API key。非 loopback 需要 `AILILI_AIGC_TOKEN`。
 
 - 至少一张参考图（本地路径或 URL）。
 - 单次最多 10 张。
-- 失败不重试（脚本只跑一轮）。
+- 瞬时网络 / HTTP 429 / 5xx 由网关自动重试最多 3 次（1s / 2s / 4s）。参数错误等业务失败不重试。
 
 ## 不适用
 

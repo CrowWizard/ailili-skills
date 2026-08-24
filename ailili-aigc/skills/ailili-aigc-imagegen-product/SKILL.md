@@ -53,16 +53,28 @@ node <本skill根>/scripts/run_collection_pipeline.cjs --phase plan --job "$DATA
 node <本skill根>/scripts/run_collection_pipeline.cjs --phase dispatch --state "$DATADIR/collection-state.json"
 ```
 
-4. 轮询，直到 `done: true`。`pending > 0` 时结束本轮，过 30–60 秒再 poll。不要 `sleep` 十分钟。
+4. 轮询，**每完成一张就立刻展示**，不要等 10 张齐了再贴。记已展示过的 `tasks[].id`。
 
 ```bash
 node <本skill根>/scripts/run_collection_pipeline.cjs --phase status --state "$DATADIR/collection-state.json"
 ```
 
-5. Summary：markdown 含 `![]()`，原样转发；最后一行 status JSON 自己解析。不要剥掉图片行。
+每次 status 后：找出 `status` 为 `success`（或 `dry-run`）、本轮还没展示、且 `images[0]` 文件存在的任务。对每个立刻在对话里输出（卖点 + 图）：
+
+```markdown
+### 第 N 张 · {label}
+卖点：{point}
+![{label}]({images[0]绝对路径})
+```
+
+`point` 为空时用 `desc` / `image_desc`。不要 Read 图片字节。失败项本轮不要当成功图发出。`pending > 0` 时结束本轮，过 30–60 秒再 poll。不要 `sleep` 十分钟。
+
+5. 全部 `done: true` 后再 summary。已经在 poll 里展示过的图 **不要再贴一遍**；summary 只报成功/失败张数，失败原因可列出。
 
 ```bash
 node <本skill根>/scripts/run_collection_pipeline.cjs --phase summary --state "$DATADIR/collection-state.json"
 ```
+
+若用户还没看过图，summary markdown 含 `![]()` 时原样转发，不要剥掉图片行。
 
 `skip_s1: true` 跳过内容推理；`extract_brand_gene: false` 跳过品牌基因；`skip_confirm: true` 跳过确认（场景 E 同样跳过）。

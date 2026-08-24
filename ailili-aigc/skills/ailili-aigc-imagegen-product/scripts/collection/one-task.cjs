@@ -29,19 +29,50 @@ function isUsableImageRef(url) {
   return fs.existsSync(value);
 }
 
-function runNodeJson(script, args, { input, timeout } = {}) {
-  const result = childProcess.spawnSync(process.execPath, [script, ...args], {
-    input,
-    encoding: "utf8",
-    timeout: timeout || 120000,
-    env: process.env,
-  });
-  if (result.error) throw result.error;
-  if (result.status !== 0) {
-    const tail = (result.stderr || result.stdout || "").trim().split(/\n/).slice(-5).join(" | ");
-    throw new Error(`${path.basename(script)} failed (exit=${result.status}): ${tail}`);
+function sleepMs(ms) {
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+function isTransientError(message) {
+  return /connection failed|econnreset|enotfound|http 5\d\d|http 429|\beof\b|unavailable/i.test(
+    String(message || "")
+  );
+}
+
+function withRetry(label, fn) {
+  const max = Number(process.env.AILILI_AIGC_RETRY_COUNT || 3);
+  let last;
+  for (let attempt = 0; attempt <= max; attempt += 1) {
+    try {
+      return fn();
+    } catch (error) {
+      last = error;
+      const message = error && error.message ? error.message : String(error);
+      if (attempt >= max || !isTransientError(message)) throw error;
+      const delay = 1000 * 2 ** attempt;
+      process.stderr.write(`[${label}] transient (${message}); retry ${attempt + 1}/${max} in ${delay}ms\n`);
+      sleepMs(delay);
+    }
   }
-  return result.stdout || "";
+  throw last;
+}
+
+function runNodeJson(script, args, { input, timeout } = {}) {
+  return withRetry(path.basename(script), () => {
+    const result = childProcess.spawnSync(process.execPath, [script, ...args], {
+      input,
+      encoding: "utf8",
+      timeout: timeout || 120000,
+      env: process.env,
+      windowsHide: process.platform === "win32",
+    });
+    if (result.error) throw result.error;
+    if (result.status !== 0) {
+      const tail = (result.stderr || result.stdout || "").trim().split(/\n/).slice(-5).join(" | ");
+      throw new Error(`${path.basename(script)} failed (exit=${result.status}): ${tail}`);
+    }
+    return result.stdout || "";
+  });
 }
 
 function runTextgen(script, params) {
