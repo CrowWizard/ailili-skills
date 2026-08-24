@@ -2,7 +2,7 @@ use std::io::Read;
 
 use serde_json::{json, Value};
 
-use crate::{gateway, nl, session};
+use crate::{gateway, nl, session, trace};
 
 const SLUG: &str = "ailili-aigc-textgen";
 const SMALL_THRESHOLD: usize = 8000;
@@ -41,6 +41,7 @@ pub fn dispatch(argv: &[String]) -> i32 {
         return 1;
     };
     eprintln!("Task created: taskId={task_id}");
+    trace::emit("textgen:queued", json!({ "taskId": task_id }));
     let result = nl::encode_content_in_result(gateway::poll_until_done(
         "/aigc/textTaskQuery",
         task_id,

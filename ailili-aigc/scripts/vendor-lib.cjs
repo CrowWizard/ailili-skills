@@ -7,13 +7,13 @@ const path = require("node:path");
 const SRC = path.resolve(__dirname, "lib");
 const SKILLS = path.resolve(__dirname, "../skills");
 const MANIFEST = {
-  "ailili-aigc-imagegen": ["run-cli.cjs"],
-  "ailili-aigc-textgen": ["run-cli.cjs"],
-  "ailili-aigc-imagegen-guide": ["run-cli.cjs"],
-  "ailili-aigc-imagegen-apparel": ["run-cli.cjs", "paths.cjs"],
-  "ailili-aigc-imagegen-product": ["run-cli.cjs", "paths.cjs", "brand-gene.cjs", "nl.cjs"],
-  "ailili-aigc-imagegen-brand-gene-extract": ["run-cli.cjs", "paths.cjs", "brand-gene.cjs", "nl.cjs"],
-  "ailili-aigc-imagegen-scenes": ["run-cli.cjs"],
+  "ailili-aigc-imagegen": ["run-cli.cjs", "trace.cjs"],
+  "ailili-aigc-textgen": ["run-cli.cjs", "trace.cjs"],
+  "ailili-aigc-imagegen-guide": ["run-cli.cjs", "trace.cjs"],
+  "ailili-aigc-imagegen-apparel": ["run-cli.cjs", "paths.cjs", "trace.cjs"],
+  "ailili-aigc-imagegen-product": ["run-cli.cjs", "paths.cjs", "brand-gene.cjs", "nl.cjs", "trace.cjs"],
+  "ailili-aigc-imagegen-brand-gene-extract": ["run-cli.cjs", "paths.cjs", "brand-gene.cjs", "nl.cjs", "trace.cjs"],
+  "ailili-aigc-imagegen-scenes": ["run-cli.cjs", "trace.cjs"],
 };
 
 function main() {

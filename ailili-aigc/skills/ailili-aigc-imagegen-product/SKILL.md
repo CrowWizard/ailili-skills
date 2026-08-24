@@ -91,6 +91,8 @@ node <本skill根>/scripts/run_collection_pipeline.cjs --phase summary --state "
 
 `skip_s1: true` 跳过内容推理；`extract_brand_gene: false` 跳过品牌基因；`skip_confirm: true` 跳过确认（场景 E 同样跳过）。
 
+计时日志：`$DATADIR/ailili-trace.log`（plan / dispatch 返回的 `trace_file`）。一行一个 JSON 事件，含 plan、S1、品牌基因、每张 textgen/imagegen、网关 poll。跑完把这个文件发出去即可查 17 分钟花在哪。不要 Read 整份进对话。
+
 ## 不适用
 
 - 服饰/鞋、淘宝京东模特套图 → `ailili-aigc-imagegen-apparel`

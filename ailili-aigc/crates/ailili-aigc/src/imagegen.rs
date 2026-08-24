@@ -1,6 +1,6 @@
 use serde_json::{json, Value};
 
-use crate::{gateway, nl, session};
+use crate::{gateway, nl, session, trace};
 
 const SLUG: &str = "ailili-aigc-imagegen";
 
@@ -33,6 +33,14 @@ pub fn dispatch(argv: &[String]) -> i32 {
         println!("{}", json!({"error": error}));
         return 1;
     }
+    trace::emit(
+        "imagegen:start",
+        json!({
+            "outputNum": params.get("outputNum"),
+            "resolution": params.get("resolution"),
+            "refs": params.get("imageUrls").and_then(Value::as_array).map(|a| a.len())
+        }),
+    );
     let create = match gateway::post_json("/aigc/imageGenAsync", &params, 150) {
         Ok(value) => value,
         Err(error) => {
@@ -50,6 +58,7 @@ pub fn dispatch(argv: &[String]) -> i32 {
     };
     let cost_token = create.get("costToken").cloned().unwrap_or(json!(0));
     eprintln!("Task created: taskId={task_id}, costToken={cost_token}");
+    trace::emit("imagegen:queued", json!({ "taskId": task_id }));
     let mut result = gateway::poll_until_done("/aigc/taskQuery", task_id, &member_id, 150);
     result["costToken"] = cost_token;
     let media_paths = download_results(&result);
@@ -72,9 +81,17 @@ pub fn dispatch(argv: &[String]) -> i32 {
         );
         summarize(&result);
     } else {
+        let printable: Vec<String> = media_paths
+            .iter()
+            .map(|p| {
+                p.trim_start_matches(r"\\?\")
+                    .trim_start_matches("//?/")
+                    .replace('\\', "/")
+            })
+            .collect();
         println!(
             "Saved full response: {}",
-            serde_json::to_string(&media_paths).unwrap_or_else(|_| "[]".into())
+            serde_json::to_string(&printable).unwrap_or_else(|_| "[]".into())
         );
     }
     0

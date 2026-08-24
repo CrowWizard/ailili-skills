@@ -4,6 +4,7 @@ mod imagegen;
 mod nl;
 mod session;
 mod textgen;
+mod trace;
 
 use serde_json::json;
 

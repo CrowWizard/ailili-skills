@@ -118,6 +118,10 @@ node .\scripts\aigc_imagegen.cjs '{"prompt":"white background product photo","im
 ![生成图](C:/Users/me/ailili/2026-08-22/session/media/out.png)
 ```
 
+## 套图计时日志
+
+套图会写 `$DATADIR/ailili-trace.log`（plan / dispatch JSON 里的 `trace_file`）。一行一个 JSON 事件。跑完把这个文件发给维护者即可分析耗时，不要贴进对话。
+
 ## 不要做的事
 
 - 不要把仓库根的 `scripts/lib` 再单独拷进 `.codex`

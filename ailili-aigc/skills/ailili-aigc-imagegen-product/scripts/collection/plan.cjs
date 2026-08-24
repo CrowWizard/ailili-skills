@@ -16,6 +16,7 @@ const {
 const { normalizeBrandKey, parseJsonFromText } = require("../lib/brand-gene.cjs");
 const { runTextgen } = require("./one-task.cjs");
 const { dataDir } = require("../lib/paths.cjs");
+const { setTraceFile, timed, trace } = require("../lib/trace.cjs");
 
 function resolveScripts(skillRoot) {
   const skillsRoot = path.dirname(path.resolve(skillRoot));
@@ -108,6 +109,8 @@ function runPlanPhase(job, skillRoot) {
   const scripts = resolveScripts(skillRoot);
   const datadir = path.resolve(job.datadir || dataDir());
   fs.mkdirSync(datadir, { recursive: true });
+  const traceFile = setTraceFile(job.trace_file || path.join(datadir, "ailili-trace.log"));
+  trace("plan:start", { scene: String(job.scene || "D").toUpperCase(), refs: (job.imageUrls || job.images || []).length, trace_file: traceFile });
   const imageUrls = job.imageUrls || job.images || [];
   if (!imageUrls.length || !imageUrls.every(isUsableUrl)) {
     throw new Error("job.imageUrls 须为非空本地路径或 http(s)/data URL 数组");
@@ -123,12 +126,14 @@ function runPlanPhase(job, skillRoot) {
 
   const needsS1 = job.skip_s1 !== true && VARIANT.needs_s1_scenes.has(scene);
   if (needsS1) {
-    const content = runTextgen({
-      prompt: buildS1Prompt(job, slots),
-      imageUrls,
-      model: "GEM_3_1_PRO",
-      thinkingLevel: "high",
-    });
+    const content = timed("plan:s1", { slots: slots.length }, () =>
+      runTextgen({
+        prompt: buildS1Prompt(job, slots),
+        imageUrls,
+        model: "GEM_3_1_PRO",
+        thinkingLevel: "high",
+      })
+    );
     const parsed = parseJsonFromText(content);
     plan = mergeS1Result(plan, extractImagePlanList(parsed));
   }
@@ -140,7 +145,9 @@ function runPlanPhase(job, skillRoot) {
     VARIANT.extract_brand_gene_scenes.has(scene) &&
     scripts.brand_gene_script;
   if (needsGene) {
-    brandGeneFile = extractBrandGeneFile(job, scripts, imageUrls, brandKey);
+    brandGeneFile = timed("plan:brand_gene", { refs: imageUrls.length }, () =>
+      extractBrandGeneFile(job, scripts, imageUrls, brandKey)
+    );
   } else if (brandGeneFile) {
     brandGeneFile = path.resolve(brandGeneFile);
   }
@@ -169,7 +176,9 @@ function runPlanPhase(job, skillRoot) {
     skill_root: path.resolve(skillRoot),
     datadir,
     write_asset_manifest: true,
+    imagePlanList: plan,
     task_specs: taskSpecs,
+    trace_file: traceFile,
   };
   const statePath = path.join(datadir, "collection-state.json");
   fs.writeFileSync(statePath, `${JSON.stringify(state, null, 2)}\n`);
@@ -181,6 +190,7 @@ function runPlanPhase(job, skillRoot) {
     skip_confirm: skipConfirm,
     plan_file: planPath,
     state_file: statePath,
+    trace_file: traceFile,
     brand_gene_file: brandGeneFile || null,
     image_urls_file: urlsPath,
     run_one_task_script: state.run_one_task_script,

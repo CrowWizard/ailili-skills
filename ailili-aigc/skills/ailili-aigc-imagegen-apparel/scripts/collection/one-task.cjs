@@ -4,6 +4,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { TYPE_LABELS } = require("../prompts.cjs");
 const { runCaptured } = require("../lib/run-cli.cjs");
+const { timed, trace } = require("../lib/trace.cjs");
 
 const IMAGEGEN_TIMEOUT = 720000;
 
@@ -80,14 +81,16 @@ function processTask(spec, skillRoot) {
     if (!Array.isArray(imageUrls) || !imageUrls.length || !imageUrls.every(isUsableImageRef)) {
       throw new Error("image_urls 须为本地路径或 http(s)");
     }
-    result.images = runImagegen({
-      prompt: spec.prompt,
-      imageUrls,
-      outputNum: 1,
-      aspectRatio: spec.ratio || "1:1",
-      resolution: spec.resolution || "2K",
-      quality: "high",
-    });
+    result.images = timed("task:imagegen", { id: tid, type: ttype }, () =>
+      runImagegen({
+        prompt: spec.prompt,
+        imageUrls,
+        outputNum: 1,
+        aspectRatio: spec.ratio || "1:1",
+        resolution: spec.resolution || "2K",
+        quality: "high",
+      })
+    );
     result.status = "success";
   } catch (error) {
     result.error = error.message;

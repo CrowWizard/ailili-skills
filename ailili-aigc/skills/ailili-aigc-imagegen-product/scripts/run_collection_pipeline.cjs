@@ -6,6 +6,7 @@ const path = require("node:path");
 const childProcess = require("node:child_process");
 const { runPlanPhase } = require("./collection/plan.cjs");
 const { collectionStatus, runSummaryPhase } = require("./collection/summary.cjs");
+const { setTraceFile, trace } = require("./lib/trace.cjs");
 
 const SKILL_ROOT = path.resolve(__dirname, "..");
 
@@ -19,8 +20,15 @@ function loadJson(file) {
   return JSON.parse(fs.readFileSync(path.resolve(file), "utf8"));
 }
 
+function bindTrace(state) {
+  const file = state && (state.trace_file || (state.datadir && path.join(state.datadir, "ailili-trace.log")));
+  if (file) setTraceFile(file);
+  return file || "";
+}
+
 function dispatch(stateFile) {
   const state = loadJson(stateFile);
+  bindTrace(state);
   const runScript = state.run_one_task_script;
   if (!runScript || !fs.existsSync(runScript)) {
     throw new Error(`run_one_task_script 不存在: ${runScript}`);
@@ -29,6 +37,10 @@ function dispatch(stateFile) {
   const datadir = path.resolve(state.datadir);
   fs.mkdirSync(datadir, { recursive: true });
   const pids = [];
+  const traceFile = bindTrace(state);
+  trace("dispatch:start", { total, trace_file: traceFile });
+  const childEnv = { ...process.env };
+  if (traceFile) childEnv.AILILI_TRACE_FILE = traceFile;
   for (let i = 1; i <= total; i += 1) {
     const log = fs.openSync(path.join(datadir, `task-${i}.log`), "a");
     const child = childProcess.spawn(
@@ -37,7 +49,7 @@ function dispatch(stateFile) {
       {
         detached: true,
         stdio: ["ignore", log, log],
-        env: process.env,
+        env: childEnv,
         windowsHide: process.platform === "win32",
       }
     );
@@ -47,6 +59,7 @@ function dispatch(stateFile) {
   }
   state.dispatch_started_at = Date.now();
   state.dispatch_pids = pids;
+  if (traceFile) state.trace_file = traceFile;
   fs.writeFileSync(path.resolve(stateFile), `${JSON.stringify(state, null, 2)}\n`);
   const payload = {
     status: "dispatch_started",
@@ -57,7 +70,9 @@ function dispatch(stateFile) {
     done: false,
     state_file: path.resolve(stateFile),
     pids,
+    trace_file: traceFile,
   };
+  trace("dispatch:ok", { total, pids });
   process.stdout.write(`${JSON.stringify(payload)}\n`);
   return payload;
 }
@@ -99,11 +114,23 @@ function main() {
       return 0;
     }
     const state = loadJson(stateFile);
+    bindTrace(state);
     if (phase === "status") {
-      process.stdout.write(`${JSON.stringify(collectionStatus(state))}\n`);
+      const snap = collectionStatus(state);
+      const elapsed = state.dispatch_started_at ? Date.now() - state.dispatch_started_at : null;
+      trace("status", {
+        pending: snap.pending,
+        completed: snap.completed,
+        failed: snap.failed,
+        done: snap.done,
+        elapsed_ms: elapsed,
+      });
+      process.stdout.write(`${JSON.stringify(snap)}\n`);
       return 0;
     }
+    trace("summary:start", {});
     runSummaryPhase(state);
+    trace("summary:ok", {});
     return 0;
   } catch (error) {
     process.stdout.write(`${JSON.stringify({ status: "error", error: error.message })}\n`);

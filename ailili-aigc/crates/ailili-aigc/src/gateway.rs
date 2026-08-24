@@ -5,7 +5,7 @@ use std::{
 
 use serde_json::{json, Value};
 
-use crate::daemon;
+use crate::{daemon, trace};
 
 pub fn api_base() -> String {
     std::env::var("AILILI_TOOL_GATEWAY")
@@ -118,8 +118,14 @@ pub fn post_json(path: &str, body: &Value, timeout_secs: u64) -> Result<Value, S
 pub fn poll_until_done(path: &str, task_id: &str, member_id: &str, timeout_secs: u64) -> Value {
     let started = Instant::now();
     let mut interval = 10u64;
+    let mut n = 0u32;
+    trace::emit(
+        "poll:start",
+        json!({ "taskId": task_id, "path": path, "interval": interval }),
+    );
     while started.elapsed() < Duration::from_secs(600) {
         thread::sleep(Duration::from_secs(interval));
+        n += 1;
         match post_json(
             path,
             &json!({ "taskId": task_id, "memberId": member_id }),
@@ -132,21 +138,50 @@ pub fn poll_until_done(path: &str, task_id: &str, member_id: &str, timeout_secs:
                     continue;
                 }
                 match result.get("status").and_then(Value::as_str) {
-                    Some("SUCCESS") | Some("FAILED") => return result,
+                    Some("SUCCESS") | Some("FAILED") => {
+                        trace::emit(
+                            "poll:done",
+                            json!({
+                                "taskId": task_id,
+                                "status": result.get("status"),
+                                "n": n,
+                                "ms": started.elapsed().as_millis() as u64
+                            }),
+                        );
+                        return result;
+                    }
                     other => {
                         eprintln!(
                             "  Polling... status={}, elapsed={}s, next in {interval}s",
                             other.unwrap_or(""),
                             started.elapsed().as_secs()
                         );
+                        trace::emit(
+                            "poll:tick",
+                            json!({
+                                "taskId": task_id,
+                                "status": other.unwrap_or(""),
+                                "n": n,
+                                "interval": interval,
+                                "elapsed_s": started.elapsed().as_secs()
+                            }),
+                        );
                     }
                 }
             }
             Err(error) => {
                 eprintln!("  Poll error: {error}");
+                trace::emit(
+                    "poll:err",
+                    json!({ "taskId": task_id, "n": n, "err": error.to_string() }),
+                );
             }
         }
         interval = interval.saturating_sub(1).max(5);
     }
+    trace::emit(
+        "poll:timeout",
+        json!({ "taskId": task_id, "n": n, "ms": started.elapsed().as_millis() as u64 }),
+    );
     json!({ "error": "Polling timeout after 600s", "taskId": task_id })
 }

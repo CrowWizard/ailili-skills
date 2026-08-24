@@ -13,6 +13,7 @@ const {
   captionForType,
 } = require("../prompts.cjs");
 const { dataDir } = require("../lib/paths.cjs");
+const { setTraceFile, trace } = require("../lib/trace.cjs");
 
 function resolveScripts(skillRoot) {
   return {
@@ -54,6 +55,8 @@ function runPlanPhase(job, skillRoot) {
   const scripts = resolveScripts(skillRoot);
   const datadir = path.resolve(job.datadir || dataDir());
   fs.mkdirSync(datadir, { recursive: true });
+  const traceFile = setTraceFile(job.trace_file || path.join(datadir, "ailili-trace.log"));
+  trace("plan:start", { variant: "apparel", trace_file: traceFile });
   const productImages = resolveProductImages(job);
   if (!productImages.length || !productImages.every(isUsableUrl)) {
     throw new Error("job.imageUrls / productImages 须为非空本地路径或 http(s) 数组，禁止 data URL");
@@ -125,7 +128,9 @@ function runPlanPhase(job, skillRoot) {
     run_one_task_script: job.run_one_task_script || scripts.run_one_task_script,
     skill_root: path.resolve(skillRoot),
     datadir,
+    imagePlanList: plan,
     task_specs: taskSpecs,
+    trace_file: traceFile,
   };
   const statePath = path.join(datadir, "collection-state.json");
   fs.writeFileSync(statePath, `${JSON.stringify(state, null, 2)}\n`);
@@ -145,6 +150,7 @@ function runPlanPhase(job, skillRoot) {
     needs_model_image: needsModel && !modelImage,
     plan_file: planPath,
     state_file: statePath,
+    trace_file: traceFile,
     image_urls_file: urlsPath,
     run_one_task_script: state.run_one_task_script,
     total: taskSpecs.length,

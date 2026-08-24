@@ -1,8 +1,32 @@
 use std::{
     env, fs,
     path::{Path, PathBuf},
+    sync::atomic::{AtomicU64, Ordering},
     time::{SystemTime, UNIX_EPOCH},
 };
+
+static FILE_SEQ: AtomicU64 = AtomicU64::new(1);
+
+fn strip_verbatim(path: PathBuf) -> PathBuf {
+    let raw = path.to_string_lossy();
+    if let Some(rest) = raw.strip_prefix(r"\\?\") {
+        if let Some(unc) = rest.strip_prefix("UNC\\") {
+            return PathBuf::from(format!(r"\\{unc}"));
+        }
+        return PathBuf::from(rest);
+    }
+    path
+}
+
+fn unique_name(slug: &str, ts: SystemTime, ext: &str) -> String {
+    format!(
+        "{slug}-{}-{}-{}.{}",
+        micros(ts),
+        std::process::id(),
+        FILE_SEQ.fetch_add(1, Ordering::Relaxed),
+        ext
+    )
+}
 
 use serde_json::{json, Value};
 
@@ -93,7 +117,7 @@ fn session_store_root() -> PathBuf {
             let probe = root.join(".write_probe");
             if fs::write(&probe, "").is_ok() {
                 let _ = fs::remove_file(&probe);
-                return root.canonicalize().unwrap_or_else(|_| root.clone());
+                return strip_verbatim(root.canonicalize().unwrap_or_else(|_| root.clone()));
             }
         }
     }
@@ -195,14 +219,14 @@ pub fn resolve_data_path(slug: &str) -> PathBuf {
     let session_dir = ensure_session(ts);
     let sub = session_dir.join("data");
     let _ = fs::create_dir_all(&sub);
-    let out = sub.join(format!("{slug}-{}.json", micros(ts)));
+    let out = sub.join(unique_name(slug, ts, "json"));
     let rel = out
         .strip_prefix(&session_dir)
         .unwrap_or(&out)
         .to_string_lossy()
         .replace('\\', "/");
     update_meta(&session_dir, slug, "data", &rel, ts);
-    out
+    strip_verbatim(out)
 }
 
 pub fn download_media(url: &str, slug: &str) -> Option<PathBuf> {
@@ -251,7 +275,7 @@ pub fn download_media(url: &str, slug: &str) -> Option<PathBuf> {
         }
     };
     let ext = guess_ext(url, &content_type);
-    let out = media_dir.join(format!("{slug}-{}.{ext}", micros(ts)));
+    let out = media_dir.join(unique_name(slug, ts, &ext));
     if fs::write(&out, &bytes).is_err() {
         return None;
     }
@@ -261,7 +285,7 @@ pub fn download_media(url: &str, slug: &str) -> Option<PathBuf> {
         .to_string_lossy()
         .replace('\\', "/");
     update_meta(&session_dir, slug, "media", &rel, ts);
-    Some(out)
+    Some(strip_verbatim(out))
 }
 
 fn guess_ext(url: &str, content_type: &str) -> String {

@@ -85,6 +85,15 @@ function missingBinMessage() {
 function runCaptured(forwardArgv, { input, timeout } = {}) {
   const bin = findAililiBin();
   if (!bin) throw new Error(missingBinMessage());
+  let trace;
+  try {
+    trace = require("./trace.cjs");
+  } catch {
+    trace = null;
+  }
+  const cmd = forwardArgv[0] || "cli";
+  const t0 = Date.now();
+  if (trace) trace.trace("cli:start", { cmd, bin });
   const result = childProcess.spawnSync(bin, forwardArgv, {
     input,
     encoding: "utf8",
@@ -93,11 +102,17 @@ function runCaptured(forwardArgv, { input, timeout } = {}) {
     windowsHide: process.platform === "win32",
   });
   if (result.stderr) process.stderr.write(result.stderr);
-  if (result.error) throw result.error;
+  const ms = Date.now() - t0;
+  if (result.error) {
+    if (trace) trace.trace("cli:err", { cmd, ms, err: result.error.message });
+    throw result.error;
+  }
   if (result.status !== 0) {
     const tail = (result.stderr || result.stdout || "").trim().split("\n").slice(-5).join(" | ");
+    if (trace) trace.trace("cli:err", { cmd, ms, exit: result.status, err: tail.slice(0, 400) });
     throw new Error(`ailili-aigc ${forwardArgv[0] || ""} failed (exit=${result.status}): ${tail}`);
   }
+  if (trace) trace.trace("cli:ok", { cmd, ms });
   return result.stdout || "";
 }
 

@@ -7,6 +7,7 @@ const { taskResultPath } = require("./slots.cjs");
 const { buildParams: buildTextgenParams } = require("./textgen-params.cjs");
 const { buildParams: buildImagegenPrompt } = require("./imagegen-prompt.cjs");
 const { runCaptured } = require("../lib/run-cli.cjs");
+const { timed, trace } = require("../lib/trace.cjs");
 
 const TEXTGEN_TIMEOUT = 360000;
 const IMAGEGEN_TIMEOUT = 720000;
@@ -117,6 +118,8 @@ function buildAssets(spec, images) {
 function processTask(spec, skillRoot) {
   const tid = spec.id || spec.type || "unknown";
   const ttype = spec.type || "";
+  const t0 = Date.now();
+  trace("task:start", { id: tid, type: ttype });
   const imageUrls = spec.image_urls || spec.imageUrls || [];
   const result = {
     id: tid,
@@ -152,20 +155,22 @@ function processTask(spec, skillRoot) {
         platform: spec.platform || "亚马逊",
         ratio,
       });
-      prompt = runTextgen(tg);
+      prompt = timed("task:textgen", { id: tid, type: ttype }, () => runTextgen(tg));
     } else if (DIRECT_TYPES.has(ttype)) {
       prompt = buildImagegenPrompt(ttype, imageUrls).prompt;
     } else {
       throw new Error(`未知类型: ${ttype}`);
     }
-    result.images = runImagegen({
-      prompt,
-      imageUrls,
-      provider,
-      outputNum: 1,
-      aspectRatio: ratio,
-      resolution,
-    });
+    result.images = timed("task:imagegen", { id: tid, type: ttype, prompt_chars: (prompt || "").length }, () =>
+      runImagegen({
+        prompt,
+        imageUrls,
+        provider,
+        outputNum: 1,
+        aspectRatio: ratio,
+        resolution,
+      })
+    );
     result.status = "success";
     result.assets = buildAssets(spec, result.images);
   } catch (error) {
@@ -180,6 +185,12 @@ function processTask(spec, skillRoot) {
   } else {
     process.stdout.write(`Saved full response: ${out}\n`);
   }
+  trace(result.status === "success" ? "task:ok" : "task:err", {
+    id: tid,
+    type: ttype,
+    ms: Date.now() - t0,
+    err: result.error || undefined,
+  });
   return result;
 }
 

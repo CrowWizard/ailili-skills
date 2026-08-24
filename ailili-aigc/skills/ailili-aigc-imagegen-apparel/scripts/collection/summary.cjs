@@ -18,7 +18,11 @@ function readTaskResults(datadir, expectedIds) {
 }
 
 function toChatPath(filePath) {
-  return String(filePath || "").replace(/\\/g, "/");
+  return String(filePath || "")
+    .replace(/^\\\\\?\\UNC\\/i, "\\\\")
+    .replace(/^\\\\\?\\/, "")
+    .replace(/^\/\/\?\//, "")
+    .replace(/\\/g, "/");
 }
 
 function imageMarkdown(label, caption, filePath) {
