@@ -8,8 +8,8 @@ description = "Local AIGC HTTP facade over the gpt-image-2 queue."
 [dependencies]
 axum = "0.8"
 base64 = "0.22"
-gpt-image-2-core = { path = "../../../gpt-image-2/crates/gpt-image-2-core" }
-gpt-image-2-runtime = { path = "../../../gpt-image-2/crates/gpt-image-2-runtime" }
+gpt-image-2-core = { path = "../gpt-image-2-core" }
+gpt-image-2-runtime = { path = "../gpt-image-2-runtime" }
 mime_guess = "2.0"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "json", "rustls-tls"] }
 serde = { version = "1.0", features = ["derive"] }

@@ -17,7 +17,7 @@ Skill split:
 
 Each skill folder is copy-paste installable (`scripts/lib` is vendored inside it). Shared source stays in `scripts/lib/`; after editing it run `node scripts/vendor-lib.cjs`. Skills call the `ailili-aigc` binary (set `AILILI_AIGC_BIN` or put it in `$AILILI_AIGC_HOME`), not sibling skill scripts.
 
-Image (and later text) compute is configured in local providers. The `../gpt-image-2` workspace is the reference queue/HTTP server to wrap — not the Agent-facing skill pack.
+Image (and later text) compute is configured in local providers. Queue/history/image providers live in `crates/gpt-image-2-core` and `crates/gpt-image-2-runtime` (crate names unchanged).
 
 See [PLAN.md](PLAN.md) for the implementation plan.
 

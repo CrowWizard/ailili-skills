@@ -10,7 +10,6 @@ on:
       - "ailili-aigc/crates/**"
       - "ailili-aigc/Cargo.toml"
       - "ailili-aigc/Cargo.lock"
-      - "gpt-image-2/crates/**"
       - ".github/workflows/build-ailili-aigc-windows-x64.yml"
 
 permissions:

@@ -1,12 +1,8 @@
 [package]
 name = "gpt-image-2-core"
 version = "0.7.3"
-edition.workspace = true
-license.workspace = true
-repository.workspace = true
-homepage.workspace = true
-documentation.workspace = true
-authors.workspace = true
+edition = "2024"
+license = "MIT"
 description = "Shared runtime, config, provider, and history core for GPT Image 2."
 
 [dependencies]

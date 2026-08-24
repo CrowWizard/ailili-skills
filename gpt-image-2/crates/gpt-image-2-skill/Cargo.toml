@@ -12,7 +12,7 @@ readme = "../../README.md"
 
 [dependencies]
 clap = { version = "4.5.51", features = ["derive"] }
-gpt-image-2-core = { path = "../gpt-image-2-core", version = "0.7.3" }
+gpt-image-2-core = { path = "../../../ailili-aigc/crates/gpt-image-2-core", version = "0.7.3" }
 gpt-image-2-web = { path = "../gpt-image-2-web", version = "0.7.3" }
 reqwest = { version = "0.12.28", default-features = false, features = ["blocking", "json", "rustls-tls"] }
 serde = { version = "1.0.228", features = ["derive"] }

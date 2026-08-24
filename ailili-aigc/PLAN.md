@@ -33,12 +33,7 @@
 
 ```
 ailili-skills/
-  gpt-image-2/                 # 已迁入：参考 daemon / 队列 / 生图 provider
-    Cargo.toml
-    Cargo.lock
-    crates/
-    skills/gpt-image-2-skill/  # Node wrapper + SKILL.md
-    docs/
+  gpt-image-2/                 # 原产品 skill / web（core+runtime 已迁走）
   ailili-aigc/                 # 本项目
     PLAN.md                    # 本文件
     Cargo.toml
@@ -54,7 +49,7 @@ ailili-skills/
   仓库根目录原 Python skill     # 只作协议对照，运行时不要再调
 ```
 
-依赖方向：`ailili-aigc-server` path-dep `../gpt-image-2/crates/gpt-image-2-*`。不要 fork 改名 gpt-image-2 整包。
+依赖方向：`ailili-aigc-server` path-dep `crates/gpt-image-2-core` 与 `crates/gpt-image-2-runtime`（crate 名不变）。
 
 ---
 

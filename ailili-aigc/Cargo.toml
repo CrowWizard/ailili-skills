@@ -2,6 +2,8 @@
 members = [
   "crates/ailili-aigc",
   "crates/ailili-aigc-server",
+  "crates/gpt-image-2-core",
+  "crates/gpt-image-2-runtime",
 ]
 resolver = "2"
 

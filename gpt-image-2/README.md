@@ -2,13 +2,14 @@
 
 Local GPT Image 2 product used as the **image (and later text) compute daemon** for `ailili-aigc`.
 
-This directory is the upstream-shaped workspace:
+`gpt-image-2-core` and `gpt-image-2-runtime` live in `../ailili-aigc/crates/`. This directory keeps the original skill CLI, web server, and docs:
 
-- `crates/` — core, runtime queue, skill CLI, loopback HTTP (`run_api_only`)
-- `skills/gpt-image-2-skill/` — Agent skill; scripts are Node (`.cjs`) wrapping the Rust binary
-- `docs/` — playbook, recovery, docker/web notes
+- `crates/gpt-image-2-skill/` — original CLI (`daemon` on 8787)
+- `crates/gpt-image-2-web/`
+- `skills/gpt-image-2-skill/` — Agent skill wrapping that CLI
+- `docs/`
 
-`ailili-aigc` talks to this daemon over HTTP. Do not treat this tree as the LinkFox skill pack.
+Mainline Codex skills use `ailili-aigc` (port 8788), not this tree.
 
 Start the loopback API:
 

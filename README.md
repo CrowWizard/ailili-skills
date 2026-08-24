@@ -4,8 +4,8 @@ Runtime install (Codex): copy skill folders + one `ailili-aigc` exe. See [ailili
 
 | Directory | Role |
 |---|---|
-| `gpt-image-2/` | Reference local daemon (queue, history, file URLs, configurable image providers). |
-| `ailili-aigc/` | Local gateway + Node skills. Runtime skills live in `ailili-aigc/skills/`. See `ailili-aigc/PLAN.md`. |
+| `gpt-image-2/` | Original skill CLI / web / docs. Core + runtime crates moved to `ailili-aigc/crates/`. |
+| `ailili-aigc/` | Local gateway + Node skills + image queue crates. Runtime skills live in `ailili-aigc/skills/`. See [ailili-aigc/PLAN.md](ailili-aigc/PLAN.md). |
 | `ailili-aigc/skills/ailili-aigc-imagegen` | Generic image gen leaf (`/aigc/imageGenAsync`). |
 | `ailili-aigc/skills/ailili-aigc-imagegen-product` | Non-apparel listing sets + A+. |
 | `ailili-aigc/skills/ailili-aigc-imagegen-apparel` | Apparel listing sets (Node prompts, was `ecommerce-images`). |
