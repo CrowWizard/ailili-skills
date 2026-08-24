@@ -1,4 +1,7 @@
-use std::{thread, time::Duration};
+use std::{
+    thread,
+    time::{Duration, SystemTime, UNIX_EPOCH},
+};
 
 pub const DEFAULT_RETRY_COUNT: usize = 3;
 pub const DEFAULT_RETRY_DELAY_SECONDS: u64 = 1;
@@ -16,6 +19,30 @@ pub fn retry_delay_seconds(retry_number: usize) -> u64 {
         .and_then(|value| value.parse().ok())
         .unwrap_or(DEFAULT_RETRY_DELAY_SECONDS);
     base.saturating_mul(2_u64.pow(retry_number.saturating_sub(1) as u32))
+}
+
+fn utc_stamp() -> String {
+    let now = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or_default();
+    let secs = now.as_secs() as i64;
+    let millis = now.subsec_millis();
+    let days = secs.div_euclid(86400);
+    let tod = secs.rem_euclid(86400);
+    let z = days + 719468;
+    let era = z.div_euclid(146097);
+    let doe = z.rem_euclid(146097) as u32;
+    let yoe = (doe - doe / 1460 + doe / 36524 - doe / 146096) / 365;
+    let y = yoe as i32 + era as i32 * 400;
+    let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
+    let mp = (5 * doy + 2) / 153;
+    let d = doy - (153 * mp + 2) / 5 + 1;
+    let m = if mp < 10 { mp + 3 } else { mp - 9 };
+    let y = if m <= 2 { y + 1 } else { y };
+    let hh = tod / 3600;
+    let mm = (tod % 3600) / 60;
+    let ss = tod % 60;
+    format!("{y:04}-{m:02}-{d:02}T{hh:02}:{mm:02}:{ss:02}.{millis:03}Z")
 }
 
 pub fn is_transient(error: &str) -> bool {
@@ -82,7 +109,8 @@ pub fn retry<T>(label: &str, mut op: impl FnMut() -> Result<T, String>) -> Resul
                 attempt += 1;
                 let delay = retry_delay_seconds(attempt);
                 eprintln!(
-                    "ailili-aigc: {label} transient ({error}); retry {attempt}/{max} in {delay}s"
+                    "ailili-aigc: {} {label} transient ({error}); retry {attempt}/{max} in {delay}s",
+                    utc_stamp()
                 );
                 if delay > 0 {
                     thread::sleep(Duration::from_secs(delay));
