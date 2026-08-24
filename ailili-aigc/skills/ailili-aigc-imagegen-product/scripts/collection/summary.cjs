@@ -19,6 +19,17 @@ function readTaskResults(datadir, expectedIds) {
   });
 }
 
+function toChatPath(filePath) {
+  return String(filePath || "").replace(/\\/g, "/");
+}
+
+function imageMarkdown(label, caption, filePath) {
+  const src = toChatPath(filePath);
+  if (!src) return "";
+  const alt = [label, caption].filter(Boolean).join(" · ") || "image";
+  return `![${alt}](${src})`;
+}
+
 function collectionStatus(state) {
   const datadir = path.resolve(state.datadir);
   const specs = state.task_specs || [];
@@ -43,17 +54,33 @@ function collectionStatus(state) {
     total: specs.length,
     done: pending === 0,
     all_ok: pending === 0 && failed === 0,
-    tasks: results.map((row, i) => ({
-      id: row.id,
-      type: specs[i] && specs[i].type,
-      label: specs[i] && specs[i].label,
-      status: row.status,
-      images: row.images || [],
-      point: row.point || (specs[i] && specs[i].point) || "",
-      desc: row.desc || (specs[i] && specs[i].desc) || "",
-      image_desc: row.image_desc || (specs[i] && specs[i].image_desc) || "",
-      error: row.error || null,
-    })),
+    tasks: results.map((row, i) => {
+      const spec = specs[i] || {};
+      const label = spec.label || row.label || "";
+      const point = row.point || spec.point || "";
+      const desc = row.desc || spec.desc || "";
+      const imageDesc = row.image_desc || spec.image_desc || "";
+      const images = row.images || [];
+      const caption = point || desc || imageDesc;
+      const markdown =
+        (row.status === "success" || row.status === "dry-run") && images[0]
+          ? [`### ${label}`, caption ? `卖点：${caption}` : "", imageMarkdown(label, caption, images[0])]
+              .filter(Boolean)
+              .join("\n")
+          : "";
+      return {
+        id: row.id,
+        type: spec.type,
+        label,
+        status: row.status,
+        images,
+        point,
+        desc,
+        image_desc: imageDesc,
+        markdown,
+        error: row.error || null,
+      };
+    }),
   };
 }
 
@@ -70,13 +97,18 @@ function formatCompletion(results, specs) {
     const spec = specs[i] || {};
     const label = spec.label || VARIANT.type_labels[spec.type] || spec.type || "图片";
     if (result.status === "success" || result.status === "dry-run") {
-      lines.push(`- **第 ${i + 1} 张 · ${label}**`);
       const point = (spec.point || result.point || "").trim();
       const desc = (spec.desc || result.desc || "").trim();
-      if (point) lines.push(`  卖点：${point}`);
-      if (desc && desc !== point) lines.push(`  简述：${desc}`);
+      const imageDesc = (spec.image_desc || result.image_desc || "").trim();
+      const caption = point || desc || imageDesc;
+      lines.push(`### 第 ${i + 1} 张 · ${label}`);
+      if (caption) lines.push(`卖点：${caption}`);
       const img = (result.images || []).find((item) => typeof item === "string" && item);
-      if (img) lines.push(`  ![${label}](${img})`);
+      if (img) {
+        lines.push("");
+        lines.push(imageMarkdown(label, caption, img));
+        lines.push("");
+      }
     }
   });
   const failedRows = results
@@ -148,4 +180,10 @@ function runSummaryPhase(state) {
   return status;
 }
 
-module.exports = { collectionStatus, runSummaryPhase, readTaskResults, formatCompletion };
+module.exports = {
+  collectionStatus,
+  runSummaryPhase,
+  readTaskResults,
+  formatCompletion,
+  imageMarkdown,
+};

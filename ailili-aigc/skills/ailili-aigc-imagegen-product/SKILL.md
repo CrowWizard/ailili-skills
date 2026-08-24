@@ -1,6 +1,6 @@
 ---
 name: ailili-aigc-imagegen-product
-description: 商品图生成（非服饰类）。支持白底主图、场景图、特写图、卖点图、A+图。单张或套图。用户说"做套图""做白底图""做场景图""做卖点图""做A+图""做特写图"时触发。
+description: 非服饰商品套图（数码/家居/食品等）。白底、场景、特写、卖点、A+。用户说「做套图」「做A+图」「做白底图」「这款音箱的场景图」时触发。衣服/鞋/淘宝模特套图走 ailili-aigc-imagegen-apparel；去水印/换色/单张精修走 ailili-aigc-imagegen-guide。
 ---
 
 # 商品图生成
@@ -34,13 +34,24 @@ PROMPT=$(node <textgen根>/scripts/aigc_textgen.cjs --stdin --content-only < "$D
 # 把 PROMPT 写入 imagegen JSON 的 prompt 后调用 aigc_imagegen.cjs
 ```
 
-成功后解析 `Saved full response: ["…png"]`，回复里追加 `![类型](abs_path)`，不要复述协议行。
+成功后解析 `Saved full response: ["…png"]`，立刻在对话里渲染图片（单独一行，绝对路径，正斜杠），并写上类型/卖点，不要复述协议行、不要只贴链接：
+
+```markdown
+### 白底图
+![白底图](C:/Users/me/ailili/2026-08-22/session/media/out.png)
+```
 
 ## 套图（plan → 确认 → dispatch → poll → summary）
 
-默认套图（场景 D、未指定 types）：卖点图×3、场景图×2、白底图×1。
+默认套图（场景 D、未指定 `types`）：总张数 `n` 取 job 的 `count` / `n` / `total` / `outputNum`，缺省 **6**。
 
-1. 写 `$DATADIR/collection-job.json`（`imageUrls` 必填，优先本地绝对路径，不要 data URL）。需要时含 `brandKey` / `types` / `provider` / `resolution` / `scene`。
+- 卖点图：`(n - 6) / 2 + 3`（向下取整）
+- 白底图：`1`
+- 场景图：其余
+
+所以 n=6 → 卖点 3、场景 2、白底 1；n=8 → 4 / 3 / 1；n=10 → 5 / 4 / 1。写了 `types` 则按 `types` 为准。
+
+1. 写 `$DATADIR/collection-job.json`（`imageUrls` 必填，优先本地绝对路径，不要 data URL）。需要时含 `count`（总张数）、`brandKey` / `types` / `provider` / `resolution` / `scene`。
 2. Plan（stdout 先 markdown 表，再一行 status JSON）。把表格原样转发给用户，然后 `AskUserQuestion`（确认生图 / 修改描述）：
 
 ```bash
@@ -59,15 +70,16 @@ node <本skill根>/scripts/run_collection_pipeline.cjs --phase dispatch --state 
 node <本skill根>/scripts/run_collection_pipeline.cjs --phase status --state "$DATADIR/collection-state.json"
 ```
 
-每次 status 后：找出 `status` 为 `success`（或 `dry-run`）、本轮还没展示、且 `images[0]` 文件存在的任务。对每个立刻在对话里输出（卖点 + 图）：
+每次 status 后：找出 `status` 为 `success`（或 `dry-run`）、本轮还没展示、且 `images[0]` 文件存在的任务。**把 `tasks[].markdown` 原样贴进对话**（不要改成链接、不要包代码块、不要 `file://`）。没有 `markdown` 时按 gpt-image-2 格式自己拼，图片必须单独成行，Windows 路径用正斜杠：
 
 ```markdown
-### 第 N 张 · {label}
-卖点：{point}
-![{label}]({images[0]绝对路径})
+### 卖点图
+卖点：双仓分格，互不串味
+
+![卖点图 · 双仓分格，互不串味](C:/Users/me/ailili/2026-08-22/session/media/out.png)
 ```
 
-`point` 为空时用 `desc` / `image_desc`。不要 Read 图片字节。失败项本轮不要当成功图发出。`pending > 0` 时结束本轮，过 30–60 秒再 poll。不要 `sleep` 十分钟。
+禁止只贴路径或 `[点击查看](path)`——聊天里必须渲染出图片。`point` 为空时用 `desc` / `image_desc`。不要 Read 图片字节。失败项本轮不要当成功图发出。`pending > 0` 时结束本轮，过 30–60 秒再 poll。不要 `sleep` 十分钟。
 
 5. 全部 `done: true` 后再 summary。已经在 poll 里展示过的图 **不要再贴一遍**；summary 只报成功/失败张数，失败原因可列出。
 
@@ -78,3 +90,10 @@ node <本skill根>/scripts/run_collection_pipeline.cjs --phase summary --state "
 若用户还没看过图，summary markdown 含 `![]()` 时原样转发，不要剥掉图片行。
 
 `skip_s1: true` 跳过内容推理；`extract_brand_gene: false` 跳过品牌基因；`skip_confirm: true` 跳过确认（场景 E 同样跳过）。
+
+## 不适用
+
+- 服饰/鞋、淘宝京东模特套图 → `ailili-aigc-imagegen-apparel`
+- 去水印、SKU 换色、放大、图内翻译、单张白底精修 → `ailili-aigc-imagegen-guide`
+- 小红书/包装/爆炸图等单张场景 → `ailili-aigc-imagegen-scenes`
+- 无商品套图意图的生图 → `ailili-aigc-imagegen`

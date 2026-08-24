@@ -3,14 +3,14 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const childProcess = require("node:child_process");
-const { dataDir, resolveDataPath } = require("../../../scripts/lib/paths.cjs");
+const { dataDir, resolveDataPath } = require("./lib/paths.cjs");
 const {
   normalizeBrandKey,
   normalizeImageUrls,
   buildPrompt,
   assembleBrandGeneJson,
-} = require("../../../scripts/lib/brand-gene.cjs");
+} = require("./lib/brand-gene.cjs");
+const { runCaptured } = require("./lib/run-cli.cjs");
 
 const SLUG = "ailili-aigc-imagegen-brand-gene-extract";
 const TEXTGEN_TIMEOUT_MS = 360000;
@@ -34,44 +34,17 @@ function readParams(argv) {
   return JSON.parse(remaining[0]);
 }
 
-function findTextgenScript() {
-  if (process.env.AILILI_TEXTGEN_SCRIPT && fs.existsSync(process.env.AILILI_TEXTGEN_SCRIPT)) {
-    return process.env.AILILI_TEXTGEN_SCRIPT;
-  }
-  const sibling = path.resolve(
-    __dirname,
-    "../../ailili-aigc-textgen/scripts/aigc_textgen.cjs"
-  );
-  if (fs.existsSync(sibling)) {
-    return sibling;
-  }
-  throw new Error(`aigc_textgen.cjs not found at ${sibling}`);
-}
-
 function loadTemplate() {
   const templatePath = path.resolve(__dirname, "../templates/brand-gene-extract.txt");
   return fs.readFileSync(templatePath, "utf8");
 }
 
-function runTextgen(script, params) {
-  const result = childProcess.spawnSync(process.execPath, [script, "--stdin", "--content-only"], {
+function runTextgen(params) {
+  const content = runCaptured(["textgen", "--stdin", "--content-only"], {
     input: JSON.stringify(params),
-    encoding: "utf8",
     timeout: TEXTGEN_TIMEOUT_MS,
-    env: process.env,
-    windowsHide: process.platform === "win32",
-  });
-  if (result.error) {
-    throw result.error;
-  }
-  if (result.status !== 0) {
-    const tail = (result.stderr || result.stdout || "").trim().split(/\n/).slice(-8).join(" | ");
-    throw new Error(`textgen failed (exit=${result.status}): ${tail}`);
-  }
-  const content = (result.stdout || "").replace(/\n$/, "");
-  if (!content) {
-    throw new Error("textgen 返回空 content");
-  }
+  }).replace(/\n$/, "");
+  if (!content) throw new Error("textgen 返回空 content");
   return content;
 }
 
@@ -113,7 +86,7 @@ function main() {
   fs.writeFileSync(paramsPath, `${JSON.stringify(textgenParams, null, 2)}\n`);
   process.stderr.write(`Wrote textgen params: ${paramsPath}\n`);
 
-  const content = runTextgen(findTextgenScript(), textgenParams);
+  const content = runTextgen(textgenParams);
   const payload = assembleBrandGeneJson(content, brandKey);
   const saved = savePayload(payload);
   process.stdout.write(`Saved full response: ${saved.outPath} (${saved.bytes} bytes)\n`);

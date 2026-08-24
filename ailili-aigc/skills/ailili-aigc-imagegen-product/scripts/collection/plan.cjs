@@ -4,6 +4,8 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { VARIANT } = require("./config.cjs");
 const {
+  jobImageCount,
+  defaultPlanForCount,
   expandTypeSlots,
   buildSlotsSkeleton,
   mergeS1Result,
@@ -11,22 +13,18 @@ const {
   formatPlanTable,
   extractImagePlanList,
 } = require("./slots.cjs");
-const { normalizeBrandKey } = require("../../../../scripts/lib/brand-gene.cjs");
-const { parseJsonFromText } = require("../../../../scripts/lib/brand-gene.cjs");
+const { normalizeBrandKey, parseJsonFromText } = require("../lib/brand-gene.cjs");
 const { runTextgen } = require("./one-task.cjs");
-const { dataDir } = require("../../../../scripts/lib/paths.cjs");
+const { dataDir } = require("../lib/paths.cjs");
 
 function resolveScripts(skillRoot) {
   const skillsRoot = path.dirname(path.resolve(skillRoot));
+  const brandGene = [
+    path.join(skillRoot, "scripts", "extract_brand_gene.cjs"),
+    path.join(skillsRoot, "ailili-aigc-imagegen-brand-gene-extract", "scripts", "extract_brand_gene.cjs"),
+  ].find((p) => fs.existsSync(p));
   return {
-    textgen_script: path.join(skillsRoot, "ailili-aigc-textgen", "scripts", "aigc_textgen.cjs"),
-    imagegen_script: path.join(skillsRoot, "ailili-aigc-imagegen", "scripts", "aigc_imagegen.cjs"),
-    brand_gene_script: path.join(
-      skillsRoot,
-      "ailili-aigc-imagegen-brand-gene-extract",
-      "scripts",
-      "extract_brand_gene.cjs"
-    ),
+    brand_gene_script: brandGene || "",
     run_one_task_script: path.join(skillRoot, "scripts", "run_one_task.cjs"),
   };
 }
@@ -116,18 +114,16 @@ function runPlanPhase(job, skillRoot) {
   }
   const scene = String(job.scene || "D").toUpperCase();
   const brandKey = normalizeBrandKey(job.brandKey);
-  const slots = expandTypeSlots(job.types, VARIANT.default_plan_d);
+  const slots = expandTypeSlots(job.types, defaultPlanForCount(jobImageCount(job)));
   let plan = buildSlotsSkeleton(slots, {
     aspectRatio: job.aspectRatio || job.ratio || "1:1",
     aplusRatio: job.aplusRatio || "",
     userImageDesc: job.imageDesc || "",
   });
 
-  const textgenScript = job.textgen_script || scripts.textgen_script;
   const needsS1 = job.skip_s1 !== true && VARIANT.needs_s1_scenes.has(scene);
   if (needsS1) {
-    if (!fs.existsSync(textgenScript)) throw new Error(`textgen_script 不存在: ${textgenScript}`);
-    const content = runTextgen(textgenScript, {
+    const content = runTextgen({
       prompt: buildS1Prompt(job, slots),
       imageUrls,
       model: "GEM_3_1_PRO",
@@ -141,7 +137,8 @@ function runPlanPhase(job, skillRoot) {
   const needsGene =
     !brandGeneFile &&
     job.extract_brand_gene !== false &&
-    VARIANT.extract_brand_gene_scenes.has(scene);
+    VARIANT.extract_brand_gene_scenes.has(scene) &&
+    scripts.brand_gene_script;
   if (needsGene) {
     brandGeneFile = extractBrandGeneFile(job, scripts, imageUrls, brandKey);
   } else if (brandGeneFile) {
@@ -168,8 +165,6 @@ function runPlanPhase(job, skillRoot) {
     plan_file: planPath,
     brandKey,
     brand_gene_file: brandGeneFile || "",
-    textgen_script: textgenScript,
-    imagegen_script: job.imagegen_script || scripts.imagegen_script,
     run_one_task_script: job.run_one_task_script || scripts.run_one_task_script,
     skill_root: path.resolve(skillRoot),
     datadir,

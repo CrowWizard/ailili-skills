@@ -1,0 +1,11 @@
+interface:
+  display_name: "Ailili 服饰套图"
+  short_description: "Apparel listing sets via Node prompt engine + local imagegen queue"
+  default_prompt: |
+    Use Node scripts in this skill. Collection: confirm product JSON and model photo,
+    then plan → AskUserQuestion → one dispatch → poll status → summary.
+    On every status poll, paste tasks[].markdown verbatim. Fallback:
+    heading, caption, then standalone `![caption](C:/abs/path.png)` with forward slashes.
+    imageUrls and modelImage must be local absolute paths. Never data URLs.
+    Do not run Python generate.py. Do not pick image providers.
+    Gateway is $AILILI_TOOL_GATEWAY (default http://127.0.0.1:8788).

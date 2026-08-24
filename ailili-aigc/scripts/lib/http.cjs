@@ -7,6 +7,7 @@ const https = require("node:https");
 const childProcess = require("node:child_process");
 const { URL } = require("node:url");
 const { getApiBase, isLoopbackBase } = require("./paths.cjs");
+const { findAililiBin } = require("./run-cli.cjs");
 
 const POLL_INTERVAL_START = 10;
 const POLL_INTERVAL_MIN = 5;
@@ -70,23 +71,6 @@ function getJson(url, timeoutMs = 2000) {
     req.on("error", reject);
     req.end();
   });
-}
-
-function findAililiBin() {
-  if (process.env.AILILI_AIGC_BIN && fs.existsSync(process.env.AILILI_AIGC_BIN)) {
-    return process.env.AILILI_AIGC_BIN;
-  }
-  const repoRoot = path.resolve(__dirname, "../..");
-  const names = process.platform === "win32" ? ["ailili-aigc.exe"] : ["ailili-aigc"];
-  for (const profile of ["debug", "release"]) {
-    for (const name of names) {
-      const candidate = path.join(repoRoot, "target", profile, name);
-      if (fs.existsSync(candidate)) {
-        return candidate;
-      }
-    }
-  }
-  return null;
 }
 
 async function ensureGateway() {

@@ -2,6 +2,32 @@
 
 const { APLUS_TYPES, SP_APLUS_TYPES, SP_LAYOUTS, DEFAULT_RATIOS } = require("./config.cjs");
 
+function jobImageCount(job) {
+  if (!job || typeof job !== "object") return 6;
+  const raw = job.count ?? job.n ?? job.total ?? job.outputNum;
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n < 1) return 6;
+  return Math.min(30, Math.floor(n));
+}
+
+/** Default mix: 卖点 (n-6)/2+3, 白底 1, 其余场景. n=6 → 3+2+1. */
+function defaultPlanForCount(n) {
+  const total = Math.max(1, Math.floor(Number(n) || 6));
+  const white = 1;
+  let selling = Math.floor((total - 6) / 2) + 3;
+  selling = Math.max(0, Math.min(selling, Math.max(0, total - white)));
+  let scene = total - selling - white;
+  if (scene < 0) {
+    selling += scene;
+    scene = 0;
+  }
+  const plan = [];
+  if (selling > 0) plan.push(["SELLING_POINT", selling]);
+  if (scene > 0) plan.push(["SCENE", scene]);
+  if (white > 0) plan.push(["WHITE_BG", white]);
+  return plan;
+}
+
 function expandTypeSlots(typesSpec, defaultPlan) {
   if (!typesSpec || !typesSpec.length) {
     const slots = [];
@@ -136,6 +162,8 @@ function taskResultPath(datadir, taskId) {
 }
 
 module.exports = {
+  jobImageCount,
+  defaultPlanForCount,
   expandTypeSlots,
   buildSlotsSkeleton,
   mergeS1Result,

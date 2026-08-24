@@ -7,5 +7,7 @@ interface:
     Do not convert images to data URLs (Windows ENAMETOOLONG). Do not Read image bytes.
     Do not Start-Process / nohup. The Node script already polls the gateway.
     Gateway is $AILILI_TOOL_GATEWAY (default http://127.0.0.1:8788).
-    After success, immediately show markdown images with absolute paths.
-    Do not wait to batch-display. Do not only paste the Saved full response line.
+    After success, immediately render a standalone markdown image:
+    `![caption](C:/abs/path.png)` with forward slashes so the chat shows the
+    picture, not a link. Do not wait to batch-display. Do not only paste the
+    Saved full response line.

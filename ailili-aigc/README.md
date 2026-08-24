@@ -2,7 +2,20 @@
 
 Local AIGC gateway + Node skill clients.
 
+**Install (copy skills + one exe only):** see [INSTALL.md](INSTALL.md).
+
 The Agent still calls skill scripts. Those scripts are **Node (`.cjs`)**, not Python. They talk to this project’s daemon using `/aigc/imageGenAsync` and `/aigc/textGenAsync`.
+
+Skill split:
+
+- `skills/ailili-aigc-imagegen` — generic leaf
+- `skills/ailili-aigc-imagegen-product` — non-apparel sets + A+
+- `skills/ailili-aigc-imagegen-apparel` — apparel sets (prompt engine in Node)
+- `skills/ailili-aigc-imagegen-guide` — single-image edits (no listing planner)
+- `skills/ailili-aigc-imagegen-scenes` — 25 commercial scene templates (was `gpt-image2-ecommerce`)
+- `skills/ailili-aigc-textgen` / `imagegen-brand-gene-extract` — text / brand DNA
+
+Each skill folder is copy-paste installable (`scripts/lib` is vendored inside it). Shared source stays in `scripts/lib/`; after editing it run `node scripts/vendor-lib.cjs`. Skills call the `ailili-aigc` binary (set `AILILI_AIGC_BIN` or put it in `$AILILI_AIGC_HOME`), not sibling skill scripts.
 
 Image (and later text) compute is configured in local providers. The `../gpt-image-2` workspace is the reference queue/HTTP server to wrap — not the Agent-facing skill pack.
 
@@ -40,4 +53,4 @@ GitHub Action: **Actions → `ailili-aigc Windows x64` → Run workflow**. Artif
 - `ailili-aigc.exe`
 - `SHA256SUMS.txt`
 
-Put the exe in a skill `scripts/` folder (or set `AILILI_AIGC_BIN` to its path). The Node wrappers (`aigc_imagegen.cjs` / `aigc_textgen.cjs`) look for `scripts/ailili-aigc.exe` next.
+Put the binary in `$AILILI_AIGC_HOME` (Windows `ailili-aigc.exe`, Linux/macOS `ailili-aigc`), or set `AILILI_AIGC_BIN` to that file (a directory is also accepted). Wrappers also look in skill `scripts/` and `$CODEX_HOME/ailili-aigc/`.

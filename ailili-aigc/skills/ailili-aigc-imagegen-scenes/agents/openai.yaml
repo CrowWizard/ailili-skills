@@ -1,0 +1,10 @@
+interface:
+  display_name: "Ailili 电商场景"
+  short_description: "25 commercial scene templates via local ailili-aigc imagegen"
+  default_prompt: |
+    Match one references/templates/*.json, assemble a short English prompt,
+    then `node scripts/run_one.cjs '<JSON>'`.
+    imageUrls: local absolute paths. Never data URLs, never codex exec, never port 4312.
+    After success render `![caption](C:/abs/path.png)` with forward slashes.
+    Listing sets go to apparel/product. Edits go to guide.
+    Gateway is $AILILI_TOOL_GATEWAY (default http://127.0.0.1:8788).

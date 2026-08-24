@@ -51,10 +51,10 @@ cwd 为本 skill 根目录。JSON 必填：`prompt`、`imageUrls`、`outputNum`�
 - 成功：`Saved full response: ["/abs/path.png"]`（多张为数组）
 - 失败：`Saved full response: /abs/path/data/….json`
 
-禁止 Read 图片文件内容。成功后**立刻**用 markdown 展示，不要只丢路径：
+禁止 Read 图片文件内容。成功后**立刻**渲染图片，不要只丢路径或超链接。必须单独一行，绝对路径，Windows 用正斜杠：
 
 ```markdown
-![生成图](/abs/path.png)
+![生成图](C:/Users/me/ailili/2026-08-22/session/media/out.png)
 ```
 
 loopback 网关可不配 API key。非 loopback 需要 `AILILI_AIGC_TOKEN`。
@@ -74,7 +74,10 @@ loopback 网关可不配 API key。非 loopback 需要 `AILILI_AIGC_TOKEN`。
 ## 不适用
 
 - 纯文字 → `ailili-aigc-textgen`
-- 商品套图编排 → `ailili-aigc-imagegen-product`
+- 非服饰套图 / A+ → `ailili-aigc-imagegen-product`
+- 服饰/鞋套图、模特库 → `ailili-aigc-imagegen-apparel`
+- 去水印、换色、放大、图内改字等单张编辑 → `ailili-aigc-imagegen-guide`
+- 小红书/包装/爆炸图等单张场景模板 → `ailili-aigc-imagegen-scenes`
 
 ## 执行指令
 

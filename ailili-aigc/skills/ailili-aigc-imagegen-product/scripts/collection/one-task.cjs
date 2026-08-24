@@ -2,11 +2,11 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const childProcess = require("node:child_process");
 const { TEXTGEN_TYPES, DIRECT_TYPES, ASSET_SLOT, TYPE_LABELS } = require("./config.cjs");
 const { taskResultPath } = require("./slots.cjs");
 const { buildParams: buildTextgenParams } = require("./textgen-params.cjs");
 const { buildParams: buildImagegenPrompt } = require("./imagegen-prompt.cjs");
+const { runCaptured } = require("../lib/run-cli.cjs");
 
 const TEXTGEN_TIMEOUT = 360000;
 const IMAGEGEN_TIMEOUT = 720000;
@@ -57,45 +57,33 @@ function withRetry(label, fn) {
   throw last;
 }
 
-function runNodeJson(script, args, { input, timeout } = {}) {
-  return withRetry(path.basename(script), () => {
-    const result = childProcess.spawnSync(process.execPath, [script, ...args], {
-      input,
-      encoding: "utf8",
-      timeout: timeout || 120000,
-      env: process.env,
-      windowsHide: process.platform === "win32",
-    });
-    if (result.error) throw result.error;
-    if (result.status !== 0) {
-      const tail = (result.stderr || result.stdout || "").trim().split(/\n/).slice(-5).join(" | ");
-      throw new Error(`${path.basename(script)} failed (exit=${result.status}): ${tail}`);
-    }
-    return result.stdout || "";
-  });
-}
-
-function runTextgen(script, params) {
-  const stdout = runNodeJson(script, ["--stdin", "--content-only"], {
-    input: JSON.stringify(params),
-    timeout: TEXTGEN_TIMEOUT,
-  });
+function runTextgen(paramsOrScript, maybeParams) {
+  const params = maybeParams || paramsOrScript;
+  const stdout = withRetry("textgen", () =>
+    runCaptured(["textgen", "--stdin", "--content-only"], {
+      input: JSON.stringify(params),
+      timeout: TEXTGEN_TIMEOUT,
+    })
+  );
   const content = stdout.replace(/\n$/, "");
   if (!content) throw new Error("textgen 返回空 content");
   return content;
 }
 
-function runImagegen(script, params) {
-  const stdout = runNodeJson(script, [JSON.stringify(params)], { timeout: IMAGEGEN_TIMEOUT });
+function runImagegen(_script, params) {
+  const payload = params && params.prompt ? params : _script;
+  const stdout = withRetry("imagegen", () =>
+    runCaptured(["imagegen", JSON.stringify(payload)], { timeout: IMAGEGEN_TIMEOUT })
+  );
   const match = stdout.match(/Saved full response:\s*(.+)\s*$/m);
   if (!match) throw new Error("imagegen 无 Saved full response");
-  const payload = match[1].trim();
-  if (payload.startsWith("[")) {
-    const images = JSON.parse(payload);
+  const saved = match[1].trim();
+  if (saved.startsWith("[")) {
+    const images = JSON.parse(saved);
     if (!images.length) throw new Error("imagegen 返回空图片数组");
     return images;
   }
-  throw new Error(`imagegen 业务失败，错误详情见: ${payload}`);
+  throw new Error(`imagegen 业务失败，错误详情见: ${saved}`);
 }
 
 function readBrandGene(spec) {
@@ -149,19 +137,11 @@ function processTask(spec, skillRoot) {
     if (!imageUrls.every(isUsableImageRef)) {
       throw new Error("image_urls 须为本地路径或 http(s)/data URL");
     }
-    const textgenScript = spec.textgen_script;
-    const imagegenScript = spec.imagegen_script;
-    if (!imagegenScript || !fs.existsSync(imagegenScript)) {
-      throw new Error(`imagegen_script 不存在: ${imagegenScript}`);
-    }
     const provider = spec.provider || "BANANA_PRO";
     const resolution = spec.resolution || "2K";
     const ratio = spec.ratio || "1:1";
     let prompt;
     if (TEXTGEN_TYPES.has(ttype)) {
-      if (!textgenScript || !fs.existsSync(textgenScript)) {
-        throw new Error(`textgen_script 不存在: ${textgenScript}`);
-      }
       const tg = buildTextgenParams(ttype, imageUrls, {
         point: spec.point || "",
         layout: spec.layout || "",
@@ -172,13 +152,13 @@ function processTask(spec, skillRoot) {
         platform: spec.platform || "亚马逊",
         ratio,
       });
-      prompt = runTextgen(textgenScript, tg);
+      prompt = runTextgen(tg);
     } else if (DIRECT_TYPES.has(ttype)) {
       prompt = buildImagegenPrompt(ttype, imageUrls).prompt;
     } else {
       throw new Error(`未知类型: ${ttype}`);
     }
-    result.images = runImagegen(imagegenScript, {
+    result.images = runImagegen({
       prompt,
       imageUrls,
       provider,

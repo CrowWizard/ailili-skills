@@ -5,14 +5,37 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
-const { expandTypeSlots, buildSlotsSkeleton, formatPlanTable } = require("./slots.cjs");
+const {
+  expandTypeSlots,
+  defaultPlanForCount,
+  jobImageCount,
+  buildSlotsSkeleton,
+  formatPlanTable,
+} = require("./slots.cjs");
 const { VARIANT } = require("./config.cjs");
 const { buildParams } = require("./textgen-params.cjs");
 const { extractWhiteBgPrompt } = require("./imagegen-prompt.cjs");
 const { runPlanPhase } = require("./plan.cjs");
 
 function testSlots() {
-  const slots = expandTypeSlots(null, VARIANT.default_plan_d);
+  assert.deepEqual(defaultPlanForCount(6), [
+    ["SELLING_POINT", 3],
+    ["SCENE", 2],
+    ["WHITE_BG", 1],
+  ]);
+  assert.deepEqual(defaultPlanForCount(8), [
+    ["SELLING_POINT", 4],
+    ["SCENE", 3],
+    ["WHITE_BG", 1],
+  ]);
+  assert.deepEqual(defaultPlanForCount(10), [
+    ["SELLING_POINT", 5],
+    ["SCENE", 4],
+    ["WHITE_BG", 1],
+  ]);
+  assert.equal(jobImageCount({}), 6);
+  assert.equal(jobImageCount({ count: 10 }), 10);
+  const slots = expandTypeSlots(null, defaultPlanForCount(6));
   assert.equal(slots.length, 6);
   assert.equal(slots.filter((t) => t === "SELLING_POINT").length, 3);
   const custom = expandTypeSlots([{ type: "WHITE_BG", count: 2 }], VARIANT.default_plan_d);

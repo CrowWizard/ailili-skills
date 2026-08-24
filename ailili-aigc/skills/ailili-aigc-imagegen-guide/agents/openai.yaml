@@ -1,0 +1,11 @@
+interface:
+  display_name: "Ailili 单图编辑"
+  short_description: "Prompt routing for single-image product edits via local imagegen"
+  default_prompt: |
+    Use this skill directory as cwd. Listing image sets go to apparel or product, not here.
+    Load matched references/*.md, assemble a labeled English prompt, then
+    `node scripts/run_one.cjs '<JSON>'`.
+    imageUrls: local absolute paths as-is. Never data URLs, never CDN upload.
+    After success, immediately render a standalone markdown image:
+    `![caption](C:/abs/path.png)` with forward slashes. Do not only paste Saved full response.
+    Gateway is $AILILI_TOOL_GATEWAY (default http://127.0.0.1:8788).

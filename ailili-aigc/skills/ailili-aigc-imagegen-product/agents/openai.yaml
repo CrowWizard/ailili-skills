@@ -4,9 +4,11 @@ interface:
   default_prompt: |
     Use Node scripts in this skill. Collection path: plan → AskUserQuestion → one dispatch
     Bash (returns immediately) → poll status → summary.
-    On every status poll, immediately show newly completed images in chat with their
-    selling point (point/desc) and markdown `![label](abs path)`. Do not wait for
-    the whole batch. Do not re-render pages already shown.
+    On every status poll, paste tasks[].markdown verbatim into chat (image renders
+    inline). Fallback: a heading, the selling point, then a standalone
+    `![caption](C:/abs/path.png)` line with forward slashes. Never a hyperlink,
+    never file://, never path-only. Do not wait for the whole batch. Do not
+    re-render pages already shown.
     imageUrls must be local absolute paths or short http(s). Never convert to data URLs.
     Do not Start-Process / sleep for minutes. Do not fan out run_one_task yourself.
     Gateway is $AILILI_TOOL_GATEWAY (default http://127.0.0.1:8788).

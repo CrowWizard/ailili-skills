@@ -3,7 +3,7 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const { dataDir, resolveDataPath } = require("../../../scripts/lib/paths.cjs");
+const { dataDir, resolveDataPath } = require("./lib/paths.cjs");
 
 const SLUG = "ailili-aigc-imagegen-brand-gene-extract";
 
